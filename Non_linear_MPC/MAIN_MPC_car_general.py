@@ -50,6 +50,7 @@ x_dot_ref,y_dot_ref,psi_ref,X_ref,Y_ref=support.trajectory_generator(t)
 sim_length=len(t) # Number of control loop iterations
 refSignals=np.zeros(len(X_ref)*outputs)
 
+# our reference array will be same like output array i.e. [x_dot,psi,X,Y] we have 4 outputs
 # Build up the reference signal vector:
 # refSignal = [x_dot_ref_0, psi_ref_0, X_ref_0, Y_ref_0, x_dot_ref_1, psi_ref_1, X_ref_1, Y_ref_1, x_dot_ref_2, psi_ref_2, X_ref_2, Y_ref_2, ... etc.]
 k=0
@@ -64,6 +65,8 @@ for i in range(0,len(refSignals),outputs):
 # If you want to put numbers here, please make sure that they are float and not
 # integers. It means that you should add a point there.
 # Example: Please write 0. in stead of 0 (Please add the point to make it float)
+    
+#load initial state same as the reference states
 x_dot=x_dot_ref[0]
 y_dot=y_dot_ref[0]
 psi=psi_ref[0]
@@ -72,10 +75,12 @@ X=X_ref[0]
 Y=Y_ref[0]
 
 states=np.array([x_dot,y_dot,psi,psi_dot,X,Y])
-statesTotal=np.zeros((len(t),len(states))) # It will keep track of all your states during the entire manoeuvre
-statesTotal[0][0:len(states)]=states
+statesTotal=np.zeros((len(t),len(states))) #rows,columns # It will keep track of all your states during the entire manoeuvre
+statesTotal[0][0:len(states)]=states  # initialise 1st state
 
 ######################### Accelerations ########################################
+
+# initialise net accelerations
 x_dot_dot=0.
 y_dot_dot=0.
 psi_dot_dot=0.
@@ -88,15 +93,16 @@ accelerations_total=np.zeros((len(t),len(accelerations)))
 # Y_opt_total=np.zeros((len(t),hz))
 
 # Load the initial input
+
 U1=0 # Input at t = -0.02 s (steering wheel angle in rad (delta))
 U2=0 # Input at t = -0.02 s (acceleration in m/s^2 (a))
-UTotal=np.zeros((len(t),2)) # To keep track all your inputs over time
+UTotal=np.zeros((len(t),2)) # To keep track all your inputs over time for simulation purpose
 UTotal[0][0]=U1
 UTotal[0][1]=U2
 
 # Initiate the controller - simulation loops
 k=0
-du=np.zeros((inputs*hz,1))
+du=np.zeros((inputs*hz,1))  # this is du6 global, inputs=2
 
 # # To extract X_opt from predicted x_aug_opt
 # C_X_opt=np.zeros((hz,(len(states)+np.size(U1)+np.size(U2))*hz))
@@ -118,7 +124,7 @@ delta_ani=[]
 
 for i in range(0,sim_length-1):
 
-    # Generate the discrete state space matrices
+    # Generate the discrete state space matrices from current state and current inputs
     Ad,Bd,Cd,Dd=support.state_space(states,U1,U2)
 
     # Generate the augmented current state and the reference vector

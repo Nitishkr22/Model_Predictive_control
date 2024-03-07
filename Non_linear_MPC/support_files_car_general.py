@@ -193,6 +193,7 @@ class SupportFilesCar:
             f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*version # y end ponts for sub trajectories
 
             # X & Y derivatives
+            # f_x_dot is not X_dot this is just to calculate the trajectory
             f_x_dot=np.array([2,1,1,1,0,-1,-1,0,1,1,1,1])*3*version # x_dot end points, 3 is just to increase the magntude of velocity
             f_y_dot=np.array([0,0,0,1,1,0,0,-1,0,0,0,0])*3*version
 
@@ -230,7 +231,7 @@ class SupportFilesCar:
                 Y=np.concatenate([Y,Y_temp])
 
             # Round the numbers to avoid numerical errors
-            X=np.round(X,8)
+            X=np.round(X,8) # round the values to 8th decimal places
             Y=np.round(Y,8)
 
             # # Plot the world
@@ -258,22 +259,29 @@ class SupportFilesCar:
             # # exit()
 
         # Vector of x and y changes per sample time
-        dX=X[1:len(X)]-X[0:len(X)-1]
-        dY=Y[1:len(Y)]-Y[0:len(Y)-1]
+            
+        #if X = [a,b,c,d,e] then dx = [b-a,c-b,d-c,e-d] sam is for dy   
+        dX=X[1:len(X)]-X[0:len(X)-1]  # can also achieved by dX = np.diff(X)
+        dY=Y[1:len(Y)]-Y[0:len(Y)-1]  # or np.diff(Y)
 
+        # calculate X_dot and Y_dot, Ts = 0.02
         X_dot=dX/Ts
         Y_dot=dY/Ts
+
+        # length of X_dot and Y_dot is one less than X and Y, hence to make it of same length we concatinate first value twice
         X_dot=np.concatenate(([X_dot[0]],X_dot),axis=0)
         Y_dot=np.concatenate(([Y_dot[0]],Y_dot),axis=0)
 
         # Define the reference yaw angles
         psi=np.zeros(len(X))
         psiInt=psi
-        psi[0]=np.arctan2(dY[0],dX[0])
+        psi[0]=np.arctan2(dY[0],dX[0])  # use arctan2 because it takes care of quadrant values
         psi[1:len(psi)]=np.arctan2(dY[0:len(dY)],dX[0:len(dX)])
 
         # We want the yaw angle to keep track the amount of rotations
-        dpsi=psi[1:len(psi)]-psi[0:len(psi)-1]
+        dpsi=psi[1:len(psi)]-psi[0:len(psi)-1]  # can also use np.diff(psi)
+
+        # this loop keeps track of rotation and make psi smooth, returns psiInt
         psiInt[0]=psi[0]
         for i in range(1,len(psiInt)):
             if dpsi[i-1]<-np.pi:
@@ -283,10 +291,10 @@ class SupportFilesCar:
             else:
                 psiInt[i]=psiInt[i-1]+dpsi[i-1]
 
-
+        # calculate X_dot and Y_dot in body frame from inertial frame using rotation matrix as discused
         x_dot_body=np.cos(psiInt)*X_dot+np.sin(psiInt)*Y_dot
         y_dot_body=-np.sin(psiInt)*X_dot+np.cos(psiInt)*Y_dot
-        y_dot_body=np.round(y_dot_body)
+        y_dot_body=np.round(y_dot_body)  # round to avoid small numerical error
 
         # # Plot the body frame velocity
         # # plt.plot(t,x_dot_body,'g',linewidth=2,label='x_dot ref')
