@@ -20,6 +20,7 @@ or anything else it was used for fails - the author is NOT RESPONSIBLE!
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.interpolate import CubicSpline
 
 class SupportFilesCar:
     ''' The following functions interact with the main file'''
@@ -44,8 +45,8 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-        trajectory=3 # Choose 1, 2 or 3, nothing else
-        version=2 # This is only for trajectory 3 (Choose 1 or 2)
+        trajectory=2 # Choose 1, 2 or 3, nothing else
+        version=1 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
 
@@ -86,8 +87,8 @@ class SupportFilesCar:
             # since trajectry 3 is made up of 11 different trajectories we define time length for 1st and other trajectoris
             first_section=14  # 14 sec for first part of the trajectory
             other_sections=14  # 14 sec for other parts of the trajectories
-            time_length=first_section+other_sections*10  # total time length of 11 trajectories
-            delay=np.zeros(12)  
+            time_length=first_section+other_sections*9  # total time length of 11 trajectories
+            delay=np.zeros(11)  
 
             # this loop defines the time start and end of each trajectories
             for dly in range(1,len(delay)):
@@ -105,6 +106,23 @@ class SupportFilesCar:
         'version':version,'x_lim':x_lim,'y_lim':y_lim}
         # exit()
         return None
+    
+    def generate_trajectory(waypoints):
+        # Unpack latitude and longitude from waypoints
+        lat, lon = zip(*waypoints)
+        cs_lat = CubicSpline(range(len(lat)), lat)  # Cubic spline interpolation for latitude
+        cs_lon = CubicSpline(range(len(lon)), lon)  # Cubic spline interpolation for longitude
+
+        # Generate a denser trajectory for smoother transitions
+        spline_points = np.linspace(0, len(lat) - 1, num=len(lat) *10)
+        lat_dense = cs_lat(spline_points)
+        lon_dense = cs_lon(spline_points)
+
+        # Calculate yaw angles (cyaw) and curvature (ck) for the dense trajectory
+        cyaw = np.arctan2(np.gradient(lon_dense), np.gradient(lat_dense))
+        ck = np.gradient(np.gradient(lon_dense, spline_points), spline_points) / (1 + (np.gradient(lat_dense, spline_points))**2)**1.5
+
+        return lat_dense, lon_dense, cyaw, ck
 
     def trajectory_generator(self,t):
         '''This method creates the trajectory for a car to follow'''
@@ -159,6 +177,8 @@ class SupportFilesCar:
 
             X=np.concatenate((X,X3),axis=0)
             Y=np.concatenate((Y,Y3),axis=0)
+            print(len(X),len(Y))
+            exit()
 
             # # Plot the world
             # plt.plot(X,Y,'b',linewidth=2,label='The trajectory')
@@ -189,13 +209,13 @@ class SupportFilesCar:
             version=self.constants['version']
 
             # X & Y levels
-            f_x=np.array([0,60,110,140,160,110,40,10,40,70,110,150])*version # x end ponts for sub trajectories
-            f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*version # y end ponts for sub trajectories
+            f_x=np.array([40,80,110,140,160,110,40,10,40,70,110])*version # x end ponts for sub trajectories
+            f_y=np.array([40,20,20,60,100,140,140,80,60,60,90])*version # y end ponts for sub trajectories
 
             # X & Y derivatives
             # f_x_dot is not X_dot this is just to calculate the trajectory
-            f_x_dot=np.array([2,1,1,1,0,-1,-1,0,1,1,1,1])*3*version # x_dot end points, 3 is just to increase the magntude of velocity
-            f_y_dot=np.array([0,0,0,1,1,0,0,-1,0,0,0,0])*3*version
+            f_x_dot=np.array([2,1,1,1,0,-1,-1,0,1,1,1])*3*version # x_dot end points, 3 is just to increase the magntude of velocity
+            f_y_dot=np.array([0,0,0,1,1,0,0,-1,0,0,0])*3*version
 
             # define empty array for global X and Y dimensions
             X=[]
@@ -229,6 +249,9 @@ class SupportFilesCar:
                 # Concatenate X and Y values at every iteration
                 X=np.concatenate([X,X_temp])
                 Y=np.concatenate([Y,Y_temp])
+
+                print("ffff: ",len(X),len(Y))
+                exit()
 
             # Round the numbers to avoid numerical errors
             X=np.round(X,8) # round the values to 8th decimal places

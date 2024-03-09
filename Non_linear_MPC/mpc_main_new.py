@@ -20,7 +20,7 @@ or anything else it was used for fails - the author is NOT RESPONSIBLE!
 
 import numpy as np
 import matplotlib.pyplot as plt
-import support_files_car_general as sfc_g
+import mpc_support_new as sfc_g
 import matplotlib.gridspec as gridspec
 import matplotlib.animation as animation
 from qpsolvers import *
@@ -184,14 +184,14 @@ for i in range(0,sim_length-1):
 
     # Update the real inputs
 
-    # steer_output =  U1*(180/np.pi)
+    steer_output =  U1*(180/np.pi)
 
-    # steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
-    # steer_output = (50/3)*steer_output
-    # steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
-    # print("steeering: ",steer_output)
-    # print("acceleration: ",U2)
-    # steer.append(steer_output)
+    steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
+    steer_output = (50/3)*steer_output
+    steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
+    print("steeering: ",steer_output)
+    print("acceleration: ",U2)
+    steer.append(steer_output)
 
     U1=U1+du[0][0]
     U2=U2+du[1][0]
