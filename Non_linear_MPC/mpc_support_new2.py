@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import CubicSpline
 
+
 class SupportFilesCar:
     ''' The following functions interact with the main file'''
 
@@ -25,7 +26,7 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-        trajectory=2 # Choose 1, 2 or 3, nothing else
+        trajectory=4 # Choose 1, 2 or 3, nothing else
         version=1 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
@@ -65,22 +66,22 @@ class SupportFilesCar:
                 y_lim=160*version
 
             # since trajectry 3 is made up of 11 different trajectories we define time length for 1st and other trajectoris
-            first_section=14  # 14 sec for first part of the trajectory
-            other_sections=14  # 14 sec for other parts of the trajectories
-            time_length=first_section+other_sections*9  # total time length of 11 trajectories
-            delay=np.zeros(11)  
+            first_section=10  # 14 sec for first part of the trajectory
+            other_sections=11  # 14 sec for other parts of the trajectories
+            time_length=first_section+other_sections*8  # total time length of 11 trajectories
+            delay=np.zeros(10)  
 
             # this loop defines the time start and end of each trajectories
             for dly in range(1,len(delay)):
                 delay[dly]=first_section+(dly-1)*other_sections
 
-            # uncomment below to see the time spans
+            #uncomment below to see the time spans
             # print(delay)
-            # exit()
+            # exit()  
         elif trajectory == 4:
             time_length = 140
-            x_lim = 180
-            y_lim = 70
+            x_lim = 170*2
+            y_lim = 160*2
         else:
             print("trajectory: 1,2 or 3; version: 1 or 2")
 
@@ -98,7 +99,7 @@ class SupportFilesCar:
         cs_lon = CubicSpline(range(len(lon)), lon)  # Cubic spline interpolation for longitude
 
         # Generate a denser trajectory for smoother transitions
-        spline_points = np.linspace(0, len(lat) - 1, num=len(lat) *30)
+        spline_points = np.linspace(0, len(lat) - 1, num=len(lat) *700) #600 ,30
         lat_dense = cs_lat(spline_points)
         lon_dense = cs_lon(spline_points)
 
@@ -108,7 +109,7 @@ class SupportFilesCar:
 
         return lat_dense, lon_dense, cyaw, ck
     
-    def gps_to_xy(self, gps_coords, start_x=0, start_y=2):
+    def gps_to_xy(self, gps_coords, start_x=4, start_y=4):
         # Your GPS to XY conversion logic goes here
         # This can involve various transformations depending on the coordinate system and units used
         
@@ -119,6 +120,7 @@ class SupportFilesCar:
         y_coords = [coord[1] - ref_gps[1] + start_y for coord in gps_coords]
         
         return x_coords, y_coords
+
 
     def trajectory_generator(self,t):
         '''This method creates the trajectory for a car to follow'''
@@ -132,9 +134,7 @@ class SupportFilesCar:
         if trajectory==1:
             X=15*t
             Y=750/900**2*X**2+250
-            print(type(X))
-            print(X.shape)
-            # exit()
+
             # # Plot the world
             # plt.plot(X,Y,'b',linewidth=2,label='The trajectory')
             # plt.xlabel('X-position [m]',fontsize=15)
@@ -175,8 +175,6 @@ class SupportFilesCar:
 
             X=np.concatenate((X,X3),axis=0)
             Y=np.concatenate((Y,Y3),axis=0)
-            # print(len(X),len(Y))
-            # exit()
 
             # # Plot the world
             # plt.plot(X,Y,'b',linewidth=2,label='The trajectory')
@@ -199,6 +197,7 @@ class SupportFilesCar:
             # plt.xlim(0,t[-1])
             # plt.show()
             # # exit()
+        
         elif trajectory ==4:
             waypoints = [[195034.87903749224,1948396.012324538],
             [195034.87674161655,1948396.258831263],
@@ -442,10 +441,18 @@ class SupportFilesCar:
             [195064.68267277532,1948466.1477999347]
             ]
             
-            for ss in waypoints:
-                ss.reverse()
-            X, Y = self.gps_to_xy(waypoints)
-            points_list = [[x, y] for x, y in zip(X, Y)]
+            # f_x=np.array([0,80,110,140,160,110,40,10,40,70,110,150]) *2 # x end ponts for sub trajectories
+            # f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*2
+            # points_list = [[x, y] for x, y in zip(f_x, f_y)]
+
+            f_x=np.array([4,80,135,159,157,142,124,91,75,75])*2 # x end ponts for sub trajectories
+            f_y=np.array([4,4,5,27,43,61,60,57,50,40])*2 # y end ponts for sub trajectories
+
+            points_list = [[x, y] for x, y in zip(f_x, f_y)]
+            # for ss in waypoints:
+            #     ss.reverse()
+            # X, Y = self.gps_to_xy(waypoints)
+            # points_list = [[x, y] for x, y in zip(X, Y)]
             # xtest=[]
             # ytest=[]
             # for wp in waypoints:
@@ -453,13 +460,14 @@ class SupportFilesCar:
             #     ytest.append(wp[1])
             # print(len(xtest),len(ytest))
             X,Y,yaw,ck = self.generate_trajectory(points_list)
-            print(len(X),len(Y))
-            # X = np.append(X,X[-1])
-            # Y = np.append(Y,Y[-1])
-            X = X[:-199]
-            Y = Y[:-199]
+            
+            X = np.append(X,X[-1])
+            Y = np.append(Y,Y[-1])
+            # X = X[:-199]
+            # Y = Y[:-199]
             print(len(t))
-            print(len(X))
+            print(len(X),len(Y))
+            # print(len(X))
             print(X.shape)
             # exit()
             ################
@@ -493,13 +501,15 @@ class SupportFilesCar:
             version=self.constants['version']
 
             # X & Y levels
-            f_x=np.array([40,80,110,140,160,110,40,10,40,70,110])*version # x end ponts for sub trajectories
-            f_y=np.array([40,20,20,60,100,140,140,80,60,60,90])*version # y end ponts for sub trajectories
+            # f_x=np.array([0,60,110,140,160,110,40,10,40,70,110,150])*version # x end ponts for sub trajectories
+            # f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*version # y end ponts for sub trajectories
 
+            f_x=np.array([4,80,135,159,157,142,124,91,75,75])*version # x end ponts for sub trajectories
+            f_y=np.array([4,4,5,27,43,61,60,57,50,40])*version # y end ponts for sub trajectories
             # X & Y derivatives
             # f_x_dot is not X_dot this is just to calculate the trajectory
-            f_x_dot=np.array([2,1,1,1,0,-1,-1,0,1,1,1])*3*version # x_dot end points, 3 is just to increase the magntude of velocity
-            f_y_dot=np.array([0,0,0,1,1,0,0,-1,0,0,0])*3*version
+            f_x_dot=np.array([2,1,1,0,0,-1,-1,-1,0,0])*3*version # x_dot end points, 3 is just to increase the magntude of velocity
+            f_y_dot=np.array([0,0,0,1,0,0,0,0,-1,-1])*3*version
 
             # define empty array for global X and Y dimensions
             X=[]
@@ -534,13 +544,11 @@ class SupportFilesCar:
                 X=np.concatenate([X,X_temp])
                 Y=np.concatenate([Y,Y_temp])
 
-                # print("ffff: ",len(X),len(Y))
-                # exit()
-
             # Round the numbers to avoid numerical errors
             X=np.round(X,8) # round the values to 8th decimal places
             Y=np.round(Y,8)
 
+            print(len(X),len(Y))
             # # Plot the world
             # plt.subplots_adjust(left=0.05,bottom=0.05,right=0.95,top=0.95,wspace=0.15,hspace=0.2)
             # plt.plot(X,Y,'b',linewidth=2,label='The ref trajectory')
@@ -553,7 +561,7 @@ class SupportFilesCar:
             # plt.xticks(np.arange(0,x_lim+1,int(x_lim/10)))
             # plt.yticks(np.arange(0,y_lim+1,int(y_lim/10)))
             # plt.show()
-            #
+            
             # plt.subplots_adjust(left=0.05,bottom=0.05,right=0.95,top=0.95,wspace=0.15,hspace=0.2)
             # plt.plot(t,X,'b',linewidth=2,label='X ref')
             # plt.plot(t,Y,'r',linewidth=2,label='Y ref')
@@ -563,7 +571,7 @@ class SupportFilesCar:
             # plt.legend(loc='upper right',fontsize='small')
             # plt.xlim(0,t[-1])
             # plt.show()
-            # # exit()
+            # exit()
 
         # Vector of x and y changes per sample time
             
@@ -787,7 +795,7 @@ class SupportFilesCar:
             #####################################################################
 
             ######################## Constraints ################################
-            x_dot_max=10
+            x_dot_max=30
             if 0.17*states_predicted_aug[0][0] < 3:
                 y_dot_max=0.17*states_predicted_aug[0][0]
             else:

@@ -1,23 +1,3 @@
-'''
-LICENSE AGREEMENT
-
-In relation to this Python file:
-
-1. Copyright of this Python file is owned by the author: Mark Misin
-2. This Python code can be freely used and distributed
-3. The copyright label in this Python file such as
-
-copyright=ax_main.text(x,y,'© Mark Misin Engineering',size=z)
-that indicate that the Copyright is owned by Mark Misin MUST NOT be removed.
-
-WARRANTY DISCLAIMER!
-
-This Python file comes with absolutely NO WARRANTY! In no event can the author
-of this Python file be held responsible for whatever happens in relation to this Python file.
-For example, if there is a bug in the code and because of that a project, invention,
-or anything else it was used for fails - the author is NOT RESPONSIBLE!
-'''
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -45,7 +25,7 @@ class SupportFilesCar:
         hz = 10 # horizon period
 
         trajectory=3 # Choose 1, 2 or 3, nothing else
-        version=2 # This is only for trajectory 3 (Choose 1 or 2)
+        version=1 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
 
@@ -246,7 +226,7 @@ class SupportFilesCar:
             # plt.xticks(np.arange(0,x_lim+1,int(x_lim/10)))
             # plt.yticks(np.arange(0,y_lim+1,int(y_lim/10)))
             # plt.show()
-            #
+            
             # plt.subplots_adjust(left=0.05,bottom=0.05,right=0.95,top=0.95,wspace=0.15,hspace=0.2)
             # plt.plot(t,X,'b',linewidth=2,label='X ref')
             # plt.plot(t,Y,'r',linewidth=2,label='Y ref')
@@ -256,7 +236,7 @@ class SupportFilesCar:
             # plt.legend(loc='upper right',fontsize='small')
             # plt.xlim(0,t[-1])
             # plt.show()
-            # # exit()
+            # exit()
 
         # Vector of x and y changes per sample time
             
@@ -314,7 +294,8 @@ class SupportFilesCar:
         # plt.legend(loc='upper right',fontsize='small')
         # plt.show()
         # exit()
-
+        # print("enddd: ",len(x_dot_body),print(len(y_dot_body)),print(len(psiInt)),print(len(X)),print(len(Y)))
+        # exit()
         return x_dot_body,y_dot_body,psiInt,X,Y
 
     def state_space(self,states,delta,a):

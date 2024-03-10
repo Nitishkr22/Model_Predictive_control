@@ -1,26 +1,6 @@
-'''
-LICENSE AGREEMENT
-
-In relation to this Python file:
-
-1. Copyright of this Python file is owned by the author: Mark Misin
-2. This Python code can be freely used and distributed
-3. The copyright label in this Python file such as
-
-copyright=ax_main.text(x,y,'© Mark Misin Engineering',size=z)
-that indicate that the Copyright is owned by Mark Misin MUST NOT be removed.
-
-WARRANTY DISCLAIMER!
-
-This Python file comes with absolutely NO WARRANTY! In no event can the author
-of this Python file be held responsible for whatever happens in relation to this Python file.
-For example, if there is a bug in the code and because of that a project, invention,
-or anything else it was used for fails - the author is NOT RESPONSIBLE!
-'''
-
 import numpy as np
 import matplotlib.pyplot as plt
-import mpc_support_new as sfc_g
+import mpc_support_new2 as sfc_g
 import matplotlib.gridspec as gridspec
 import matplotlib.animation as animation
 from qpsolvers import *
@@ -42,10 +22,12 @@ trajectory=constants['trajectory']
 
 # Generate the refence signals
 t=np.zeros((int(time_length/Ts+1)))
-
 for i in range(1,len(t)):
     t[i]=np.round(t[i-1]+Ts,2)
 
+# print(len(t))
+# exit()
+    
 x_dot_ref,y_dot_ref,psi_ref,X_ref,Y_ref=support.trajectory_generator(t)
 sim_length=len(t) # Number of control loop iterations
 refSignals=np.zeros(len(X_ref)*outputs)
@@ -124,6 +106,7 @@ X_ani=[]
 Y_ani=[]
 delta_ani=[]
 steer = []
+dub = []
 for i in range(0,sim_length-1):
 
     # Generate the discrete state space matrices from current state and current inputs
@@ -144,7 +127,14 @@ for i in range(0,sim_length-1):
         hz=hz-1
 
     # Generate the compact simplification matrices for the cost function
-    Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
+    # Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
+    if du is None or du[0] is None:
+        Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,dub[-2])
+    else:
+        Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
+
+
+
     ft=np.matmul(np.concatenate((np.transpose(x_aug_t)[0][0:len(x_aug_t)],r),axis=0),Fdbt)
     # Hdb=np.array([[10.,1.],[1.,10.]])
     # ft=np.array([0.,0.])
@@ -157,6 +147,7 @@ for i in range(0,sim_length-1):
         # print(du)
         # exit()
     except ValueError as ve:
+        print("dddddddddddddddddddddddd", ve)
         print(Hdb)
         print(ft)
         print(G)
@@ -192,9 +183,26 @@ for i in range(0,sim_length-1):
     print("steeering: ",steer_output)
     print("acceleration: ",U2)
     steer.append(steer_output)
+    
 
+    # print(dub[-1][0][0])
+
+    # 
+    # print("duuu: ",du[0][0],du[1][0])
+    # print(type(du))
+    # print("Value of du:", du)
+    if du is None or du[0] is None:
+        print("helloaa")
+        # du[0][0] = 0
+        # du[1][0] = 0
+        # U1=U1+steer[-1]
+        continue
+    # else:
     U1=U1+du[0][0]
     U2=U2+du[1][0]
+    
+    dub.append(du)
+    
 
     UTotal[i+1][0]=U1
     UTotal[i+1][1]=U2

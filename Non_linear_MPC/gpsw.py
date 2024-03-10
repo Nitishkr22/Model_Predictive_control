@@ -1,29 +1,44 @@
-
-
 import numpy as np
-from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
 
-from scipy.interpolate import interp1d
+# Define a function to convert GPS coordinates to X, Y positions
+def gps_to_xy(gps_coords):
+    # Here, we'll just subtract the first GPS coordinates to make them relative
+    ref_gps = gps_coords[0]
+    x_coords = [coord[0] - ref_gps[0] for coord in gps_coords]
+    y_coords = [coord[1] - ref_gps[1] for coord in gps_coords]
+    
+    return x_coords, y_coords
+
+def gps_to_xyn(gps_coords, start_x=10, start_y=10):
+    # Your GPS to XY conversion logic goes here
+    # This can involve various transformations depending on the coordinate system and units used
+    
+    # For demonstration purposes, let's assume a simple conversion:
+    # Here, we'll just subtract the first GPS coordinates to make them relative
+    ref_gps = gps_coords[0]
+    x_coords = [coord[0] - ref_gps[0] + start_x for coord in gps_coords]
+    y_coords = [coord[1] - ref_gps[1] + start_y for coord in gps_coords]
+    
+    return x_coords, y_coords
 
 
-def generate_trajectory(waypoints):
-    # Unpack latitude and longitude from waypoints
-    lat, lon = zip(*waypoints)
-    cs_lat = CubicSpline(range(len(lat)), lat)  # Cubic spline interpolation for latitude
-    cs_lon = CubicSpline(range(len(lon)), lon)  # Cubic spline interpolation for longitude
+# Define your trajectory generation function
+def trajectory_generator_from_gps(gps_waypoints):
+    # Convert GPS coordinates to X, Y positions
+    X, Y = gps_to_xyn(gps_waypoints)
 
-    # Generate a denser trajectory for smoother transitions
-    spline_points = np.linspace(0, len(lat) - 1, num=len(lat) *10)
-    lat_dense = cs_lat(spline_points)
-    lon_dense = cs_lon(spline_points)
+    # Plot the trajectory
+    plt.plot(Y, X, 'b', linewidth=2, label='The trajectory')
+    plt.xlabel('X-position [m]', fontsize=15)
+    plt.ylabel('Y-position [m]', fontsize=15)
+    plt.grid(True)
+    plt.legend(loc='upper right', fontsize='small')
+    plt.show()
 
-    # Calculate yaw angles (cyaw) and curvature (ck) for the dense trajectory
-    cyaw = np.arctan2(np.gradient(lon_dense), np.gradient(lat_dense))
-    ck = np.gradient(np.gradient(lon_dense, spline_points), spline_points) / (1 + (np.gradient(lat_dense, spline_points))**2)**1.5
+    return X, Y
 
-    return lat_dense, lon_dense, cyaw, ck
-
+# Usage example:
 waypoints = [[195034.87903749224,1948396.012324538],
 [195034.87674161655,1948396.258831263],
 [195034.869355784,1948396.645694745],
@@ -265,39 +280,6 @@ waypoints = [[195034.87903749224,1948396.012324538],
 [195065.2015718736,1948466.1589276572],
 [195064.68267277532,1948466.1477999347]
 ]
-xtest=[]
-ytest=[]
-for wp in waypoints:
-    xtest.append(wp[0])
-    ytest.append(wp[1])
 
-# X,Y,yaw,ck = generate_trajectory(waypoints)
-
-f_x=np.array([0,80,110,140,160,110,40,10,40,70,110,150]) *2 # x end ponts for sub trajectories
-f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*2
-points_list = [[x, y] for x, y in zip(f_x, f_y)]
-X,Y,yaw,ck = generate_trajectory(waypoints)
-print(len(X),len(Y))
-# # Plot the world
-plt.plot(Y,X,'b',linewidth=2,label='The trajectory')
-plt.xlabel('X-position [m]',fontsize=15)
-plt.ylabel('Y-position [m]',fontsize=15)
-# plt.xlim(0,x_lim)
-# plt.ylim(0,y_lim)
-# plt.xticks(np.arange(0,x_lim+1,int(x_lim/10)))
-# plt.yticks(np.arange(0,y_lim+1,int(y_lim/10)))
-plt.grid(True)
-plt.legend(loc='upper right',fontsize='small')
-plt.show()
-
-# plt.plot(t,X,'b',linewidth=2,label='X ref')
-# plt.plot(t,Y,'r',linewidth=2,label='Y ref')
-# plt.xlabel('t-position [s]',fontsize=15)
-# plt.ylabel('X,Y-position [m]',fontsize=15)
-# plt.grid(True)
-# plt.legend(loc='upper right',fontsize='small')
-# plt.xlim(0,t[-1])
-plt.show()
-# exit()
-# print("xxxxxxx: ",len(x))
-# print("yyyyyyyy: ",len(y))
+X_traj, Y_traj = trajectory_generator_from_gps(waypoints)
+print(len(X_traj))
