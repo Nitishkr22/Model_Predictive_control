@@ -27,9 +27,12 @@ for i in range(1,len(t)):
 
 # print(len(t))
 # exit()
-    
+
 x_dot_ref,y_dot_ref,psi_ref,X_ref,Y_ref=support.trajectory_generator(t)
 sim_length=len(t) # Number of control loop iterations
+print("sim_length: ",sim_length)   ##### sim_length = len(X_ref)
+print(len(X_ref))
+# exit()
 refSignals=np.zeros(len(X_ref)*outputs)
 
 # our reference array will be same like output array i.e. [x_dot,psi,X,Y] we have 4 outputs
@@ -47,10 +50,10 @@ for i in range(0,len(refSignals),outputs):
 # If you want to put numbers here, please make sure that they are float and not
 # integers. It means that you should add a point there.
 # Example: Please write 0. in stead of 0 (Please add the point to make it float)
-    
+
 #load initial state same as the reference states
-    
-    
+
+
 x_dot=x_dot_ref[0]
 y_dot=y_dot_ref[0]
 psi=psi_ref[0]
@@ -78,8 +81,10 @@ accelerations_total=np.zeros((len(t),len(accelerations)))
 
 # Load the initial input
 
-U1=0 # Input at t = -0.02 s (steering wheel angle in rad (delta))
-U2=0 # Input at t = -0.02 s (acceleration in m/s^2 (a))
+U1=0.0 # Input at t = -0.02 s (steering wheel angle in rad (delta))
+U2=0.0 # Input at t = -0.02 s (acceleration in m/s^2 (a))
+
+### next 3 lines not required in real time
 UTotal=np.zeros((len(t),2)) # To keep track all your inputs over time for simulation purpose
 UTotal[0][0]=U1
 UTotal[0][1]=U2
@@ -99,6 +104,7 @@ du=np.zeros((inputs*hz,1))  # this is du6 global, inputs=2
 #     C_Y_opt[i-5][i+7*(i-5)]=1
 
 # Arrays for the animation - every 5th state goes in there (once in 0.1 seconds, because Ts=0.02 seconds)
+
 t_ani=[]
 x_dot_ani=[]
 psi_ani=[]
@@ -107,8 +113,22 @@ Y_ani=[]
 delta_ani=[]
 steer = []
 dub = []
-for i in range(0,sim_length-1):
+print(sim_length)
 
+# exit()
+X_last = refSignals[-2]
+Y_last = refSignals[-1]
+xy = [X_last,Y_last]
+
+for i in range(0,len(X_ref)-1):
+
+    # X_upt = states[-2]
+    # Y_upt = states[-1]
+    position = [states[-2],states[-1]]
+    current_ref = [X_ref[i],Y_ref[i]]
+    dist =  ((np.linalg.norm(np.array(position) - xy)) )
+    # dist =  ((np.linalg.norm(np.array(position) - current_ref)) )
+    print("distance: ",dist)
     # Generate the discrete state space matrices from current state and current inputs
     Ad,Bd,Cd,Dd=support.state_space(states,U1,U2)
 
@@ -123,16 +143,18 @@ for i in range(0,sim_length-1):
     if k+outputs*hz<=len(refSignals):
         r=refSignals[k:k+outputs*hz]
     else:
+        print("hello")
         r=refSignals[k:len(refSignals)]
         hz=hz-1
+        print(k)
 
     # Generate the compact simplification matrices for the cost function
     # Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
-    if du is None or du[0] is None:
-        Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,dub[-2])
-    else:
-        Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
-
+    # if du is None or du[0] is None:
+    #     Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,dub[-2])
+    # else:
+    #     Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
+    Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
 
 
     ft=np.matmul(np.concatenate((np.transpose(x_aug_t)[0][0:len(x_aug_t)],r),axis=0),Fdbt)
@@ -180,8 +202,8 @@ for i in range(0,sim_length-1):
     steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
     steer_output = (50/3)*steer_output
     steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
-    print("steeering: ",steer_output)
-    print("acceleration: ",U2)
+    # print("steeering: ",steer_output)
+    # print("acceleration: ",U2)
     steer.append(steer_output)
     
 
@@ -227,8 +249,9 @@ for i in range(0,sim_length-1):
         Y_ani=np.concatenate([Y_ani,[states[5]]])
         delta_ani=np.concatenate([delta_ani,[U1]])
 
+
 ######################## ANIMATION LOOP ###############################
-# exit()
+exit()
 frame_amount=len(X_ani)
 lf=constants['lf']
 lr=constants['lr']

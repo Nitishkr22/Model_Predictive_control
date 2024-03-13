@@ -26,7 +26,7 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-        trajectory=4 # Choose 1, 2 or 3, nothing else
+        trajectory=1 # Choose 1, 2 or 3, nothing else
         version=1 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
@@ -36,7 +36,7 @@ class SupportFilesCar:
             Q=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for outputs (all samples, except the last one)
             S=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for the final horizon period outputs
             R=np.matrix('100 0;0 1') # weights for inputs
-        elif trajectory==3:
+        elif trajectory==3 or trajectory==4:
             # Weights for trajectory 3, version 1
             Q=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for outputs (all samples, except the last one)
             S=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for the final horizon period outputs
@@ -79,9 +79,10 @@ class SupportFilesCar:
             # print(delay)
             # exit()  
         elif trajectory == 4:
-            time_length = 140
+            time_length = 60
             x_lim = 170*2
             y_lim = 160*2
+
         else:
             print("trajectory: 1,2 or 3; version: 1 or 2")
 
@@ -92,6 +93,19 @@ class SupportFilesCar:
         # exit()
         return None
     
+    def interpolate_waypoints(self, waypoints, num_intermediate_points=13):
+        interpolated_waypoints = []
+        for i in range(len(waypoints) - 1):
+            lat1, lon1 = waypoints[i]
+            lat2, lon2 = waypoints[i + 1]
+            xs = np.linspace(lat1, lat2, num=num_intermediate_points + 2)[1:-1]
+            ys = np.linspace(lon1, lon2, num=num_intermediate_points + 2)[1:-1]
+            interpolated_waypoints.extend(list(zip(xs, ys)))
+
+        return interpolated_waypoints
+
+
+
     def generate_trajectory(self,waypoints):
         # Unpack latitude and longitude from waypoints
         lat, lon = zip(*waypoints)
@@ -444,31 +458,36 @@ class SupportFilesCar:
             # f_x=np.array([0,80,110,140,160,110,40,10,40,70,110,150]) *2 # x end ponts for sub trajectories
             # f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*2
             # points_list = [[x, y] for x, y in zip(f_x, f_y)]
+            for ss in waypoints:
+                ss.reverse()
+            #####################################
+            waypoints_updated = self.interpolate_waypoints(waypoints)
+            ####################################
+            # f_x=np.array([4,80,135,159,157,142,124,91,75,75])*2 # x end ponts for sub trajectories
+            # f_y=np.array([4,4,5,27,43,61,60,57,50,40])*2 # y end ponts for sub trajectories
 
-            f_x=np.array([4,80,135,159,157,142,124,91,75,75])*2 # x end ponts for sub trajectories
-            f_y=np.array([4,4,5,27,43,61,60,57,50,40])*2 # y end ponts for sub trajectories
-
-            points_list = [[x, y] for x, y in zip(f_x, f_y)]
-            # for ss in waypoints:
-            #     ss.reverse()
-            # X, Y = self.gps_to_xy(waypoints)
+            # points_list = [[x, y] for x, y in zip(f_x, f_y)]
+            
+            X, Y = self.gps_to_xy(waypoints_updated)
+            print(len(X),len(Y))
             # points_list = [[x, y] for x, y in zip(X, Y)]
             # xtest=[]
             # ytest=[]
-            # for wp in waypoints:
+            # for wp in waypoints_updated:
             #     xtest.append(wp[0])
             #     ytest.append(wp[1])
             # print(len(xtest),len(ytest))
-            X,Y,yaw,ck = self.generate_trajectory(points_list)
+            # X,Y,yaw,ck = self.generate_trajectory(points_list)
             
-            X = np.append(X,X[-1])
-            Y = np.append(Y,Y[-1])
-            # X = X[:-199]
-            # Y = Y[:-199]
+            # X = np.append(X,X[-1])
+            # Y = np.append(Y,Y[-1])
+            X = np.array(X[106:])
+            Y = np.array(Y[106:])
+            print(type(np.array(X)))
             print(len(t))
             print(len(X),len(Y))
             # print(len(X))
-            print(X.shape)
+            # print(X.shape)
             # exit()
             ################
             # Plot the world
@@ -926,7 +945,7 @@ class SupportFilesCar:
         new_states[1]=y_dot
         new_states[2]=psi
         new_states[3]=psi_dot
-        new_states[4]=X
+        new_states[4]=X  # pass gps x and y coordinate only
         new_states[5]=Y
 
         return new_states,x_dot_dot,y_dot_dot,psi_dot_dot
