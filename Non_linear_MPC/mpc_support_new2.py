@@ -26,7 +26,7 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-        trajectory=1 # Choose 1, 2 or 3, nothing else
+        trajectory=4 # Choose 1, 2 or 3, nothing else
         version=1 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
@@ -79,7 +79,7 @@ class SupportFilesCar:
             # print(delay)
             # exit()  
         elif trajectory == 4:
-            time_length = 60
+            time_length = 150
             x_lim = 170*2
             y_lim = 160*2
 
@@ -454,7 +454,7 @@ class SupportFilesCar:
             [195065.2015718736,1948466.1589276572],
             [195064.68267277532,1948466.1477999347]
             ]
-            
+            print(len(waypoints))
             # f_x=np.array([0,80,110,140,160,110,40,10,40,70,110,150]) *2 # x end ponts for sub trajectories
             # f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*2
             # points_list = [[x, y] for x, y in zip(f_x, f_y)]
@@ -468,17 +468,17 @@ class SupportFilesCar:
 
             # points_list = [[x, y] for x, y in zip(f_x, f_y)]
             
-            X, Y = self.gps_to_xy(waypoints_updated)
-            print(len(X),len(Y))
+            # X, Y = self.gps_to_xy(waypoints_updated)
+            # print(len(X),len(Y))
             # points_list = [[x, y] for x, y in zip(X, Y)]
-            # xtest=[]
-            # ytest=[]
-            # for wp in waypoints_updated:
-            #     xtest.append(wp[0])
-            #     ytest.append(wp[1])
+            X=[]
+            Y=[]
+            for wp in waypoints_updated:
+                X.append(wp[0])
+                Y.append(wp[1])
             # print(len(xtest),len(ytest))
             # X,Y,yaw,ck = self.generate_trajectory(points_list)
-            
+            print(len(X),len(Y))
             # X = np.append(X,X[-1])
             # Y = np.append(Y,Y[-1])
             X = np.array(X[106:])
@@ -488,7 +488,7 @@ class SupportFilesCar:
             print(len(X),len(Y))
             # print(len(X))
             # print(X.shape)
-            # exit()
+            exit()
             ################
             # Plot the world
             # plt.plot(X,Y,'b',linewidth=2,label='The trajectory')
@@ -917,7 +917,7 @@ class SupportFilesCar:
         X=current_states[4]
         Y=current_states[5]
 
-        sub_loop=30  #Chops Ts into 30 pieces
+        sub_loop=10  #Chops Ts into 30 pieces
         for i in range(0,sub_loop):
 
             # Compute lateral forces
@@ -947,5 +947,6 @@ class SupportFilesCar:
         new_states[3]=psi_dot
         new_states[4]=X  # pass gps x and y coordinate only
         new_states[5]=Y
-
+        print("new_states: ",new_states)
+        print("psi_value: ",np.rad2deg(psi))
         return new_states,x_dot_dot,y_dot_dot,psi_dot_dot

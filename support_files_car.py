@@ -49,7 +49,7 @@ class SupportFilesCar:
 
         ### PID END ###
 
-        trajectory=2 # You should only choose 1,2,3
+        trajectory=3 # You should only choose 1,2,3
 
         self.constants={'m':m, 'Iz':Iz, 'Caf':Caf, 'Car':Car, 'lf':lf, 'lr':lr,\
             'Ts':Ts, 'Q':Q, 'S':S, 'R':R, 'outputs':outputs, 'hz':hz, 'x_dot':x_dot,\
@@ -248,5 +248,5 @@ class SupportFilesCar:
         new_states[1]=psi
         new_states[2]=psi_dot
         new_states[3]=Y
-
+        print("new_states: ",new_states)
         return new_states

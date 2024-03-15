@@ -60,7 +60,8 @@ psi=psi_ref[0]
 psi_dot=0.
 X=X_ref[0]
 Y=Y_ref[0]
-
+print(x_dot)
+# exit()
 states=np.array([x_dot,y_dot,psi,psi_dot,X,Y])
 statesTotal=np.zeros((len(t),len(states))) #rows,columns # It will keep track of all your states during the entire manoeuvre
 statesTotal[0][0:len(states)]=states  # initialise 1st state
@@ -128,7 +129,7 @@ for i in range(0,len(X_ref)-1):
     current_ref = [X_ref[i],Y_ref[i]]
     dist =  ((np.linalg.norm(np.array(position) - xy)) )
     # dist =  ((np.linalg.norm(np.array(position) - current_ref)) )
-    print("distance: ",dist)
+    # print("distance: ",dist)
     # Generate the discrete state space matrices from current state and current inputs
     Ad,Bd,Cd,Dd=support.state_space(states,U1,U2)
 
@@ -149,11 +150,6 @@ for i in range(0,len(X_ref)-1):
         print(k)
 
     # Generate the compact simplification matrices for the cost function
-    # Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
-    # if du is None or du[0] is None:
-    #     Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,dub[-2])
-    # else:
-    #     Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
     Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
 
 
@@ -224,7 +220,6 @@ for i in range(0,len(X_ref)-1):
     U2=U2+du[1][0]
     
     dub.append(du)
-    
 
     UTotal[i+1][0]=U1
     UTotal[i+1][1]=U2
@@ -251,7 +246,7 @@ for i in range(0,len(X_ref)-1):
 
 
 ######################## ANIMATION LOOP ###############################
-exit()
+# exit()
 frame_amount=len(X_ani)
 lf=constants['lf']
 lr=constants['lr']

@@ -5,7 +5,6 @@ import support_files_car as sfc  ## import support file
 import matplotlib.gridspec as gridspec
 import matplotlib.animation as animation
 
-
 # Create an object for the support functions.
 support=sfc.SupportFilesCar()  ## create object of support files
 constants=support.constants
@@ -27,6 +26,7 @@ refSignals=np.zeros(len(X_ref)*outputs)
 
 # Build up the reference signal vector:
 # refSignal = [psi_ref_0, Y_ref_0, psi_ref_1, Y_ref_1, psi_ref_2, Y_ref_2, ... etc.]
+
 k=0
 for i in range(0,len(refSignals),outputs):
     refSignals[i]=psi_ref[k]
@@ -38,7 +38,7 @@ for i in range(0,len(refSignals),outputs):
 # integers. It means that you should add a point there.
 # Example: Please write 0. in stead of 0 (Please add the point to make it float)
 y_dot=0.
-psi=0.
+psi=psi_ref[0]
 psi_dot=0.
 Y=Y_ref[0]
 
@@ -253,7 +253,7 @@ car_predicted,=ax0.plot([],[],'-m',linewidth=1)
 car_determined,=ax0.plot([],[],'-r',linewidth=1)
 
 # Copyright
-copyright=ax0.text(0,20,'© Mark Misin Engineering',size=15)
+# copyright=ax0.text(0,20,'© Mark Misin Engineering',size=15)
 
 # Establish the right (x,y) dimensions
 plt.xlim(X_ref[0],X_ref[frame_amount])

@@ -36,8 +36,8 @@ class SupportFilesCar:
             R=np.matrix('100 0;0 1') # weights for inputs
         elif trajectory==3:
             # Weights for trajectory 3, version 1
-            Q=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for outputs (all samples, except the last one)
-            S=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for the final horizon period outputs
+            Q=np.matrix('1 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for outputs (all samples, except the last one)
+            S=np.matrix('1 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for the final horizon period outputs
             R=np.matrix('100 0;0 1') # weights for inputs
         else:
             # Weights for trajectories 1 & 2
@@ -460,7 +460,7 @@ class SupportFilesCar:
             #####################################################################
 
             ######################## Constraints ################################
-            x_dot_max=30
+            x_dot_max=30.0
             if 0.17*states_predicted_aug[0][0] < 3:
                 y_dot_max=0.17*states_predicted_aug[0][0]
             else:
