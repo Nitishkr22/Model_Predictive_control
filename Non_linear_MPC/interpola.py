@@ -1,4 +1,8 @@
-[[195034.82017151944,1948390.779560565],
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Given X and Y points
+points = [[195034.82017151944,1948390.779560565],
 [195034.821157322,1948390.8035023974],
 [195034.8221482442,1948390.8276840348],
 [195034.8230684601,1948390.852093134],
@@ -2907,3 +2911,24 @@
 [195084.36790358677,1948436.7302347582],
 [195084.36790358677,1948436.7302347582],
 [195084.3371144561,1948436.4597816782]]
+
+# Convert points to numpy array for easier manipulation
+points_array = np.array(points)
+print(len(points))
+# Separate X and Y coordinates
+x = points_array[:, 0]
+y = points_array[:, 1]
+
+# Interpolate new points
+num_new_points = len(points) * 4 - 1  # Double the number of points, minus one
+new_x = np.interp(np.linspace(0, len(x) - 1, num_new_points), range(len(x)), x)
+new_y = np.interp(np.linspace(0, len(y) - 1, num_new_points), range(len(y)), y)
+print(len(new_x))
+# Plot original and interpolated points
+plt.plot(x, y, 'bo-', label='Original Points')
+plt.plot(new_x, new_y, 'r.-', label='Interpolated Points')
+plt.xlabel('X Position')
+plt.ylabel('Y Position')
+plt.title('Original and Interpolated Points')
+plt.legend()
+plt.show()

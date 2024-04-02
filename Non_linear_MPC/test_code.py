@@ -47,7 +47,7 @@ def interpolate_waypoints(waypoints, num_intermediate_points=28):
     return interpolated_waypoints
 
 
-file_path = '1709897029.txt'  # Replace with the actual file path
+file_path = 'output_0.02.txt'  # Replace with the actual file path
 waypoints = read_waypoints_from_file(file_path)
 print(type(waypoints))
 interpolated_waypoints = interpolate_waypoints(waypoints)
@@ -310,9 +310,9 @@ for wp in interpolated_waypoints:
 # X,Y,yaw,ck = generate_trajectory(waypoints)
 # print(len(X),len(Y))
 # # # Plot the world
-# plt.plot(xtest,ytest,'b',linewidth=2,label='The trajectory')
-# plt.xlabel('X-position [m]',fontsize=15)
-# plt.ylabel('Y-position [m]',fontsize=15)
+plt.scatter(xtest,ytest)
+plt.xlabel('X-position [m]',fontsize=15)
+plt.ylabel('Y-position [m]',fontsize=15)
 
 # # plt.xlim(0,x_lim)
 # # plt.ylim(0,y_lim)
