@@ -93,7 +93,7 @@ class SupportFilesCar:
         # exit()
         return None
     
-    def interpolate_waypoints(self, waypoints, num_intermediate_points=13):
+    def interpolate_waypoints(self, waypoints, num_intermediate_points=32):
         interpolated_waypoints = []
         for i in range(len(waypoints) - 1):
             lat1, lon1 = waypoints[i]
@@ -481,14 +481,14 @@ class SupportFilesCar:
             print(len(X),len(Y))
             # X = np.append(X,X[-1])
             # Y = np.append(Y,Y[-1])
-            X = np.array(X[106:])
-            Y = np.array(Y[106:])
+            X = np.array(X[147:])
+            Y = np.array(Y[147:])
             print(type(np.array(X)))
             print(len(t))
             print(len(X),len(Y))
             # print(len(X))
             # print(X.shape)
-            exit()
+            # exit()
             ################
             # Plot the world
             # plt.plot(X,Y,'b',linewidth=2,label='The trajectory')
