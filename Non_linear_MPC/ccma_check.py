@@ -1,4 +1,16 @@
-[[195034.82017151944,1948390.779560565],
+import numpy as np
+from ccma import CCMA
+import matplotlib.pyplot as plt
+
+
+# Create noisy points on an unit circle
+# n = 50
+# noise = np.random.normal(0, 0.05, (n, 2))
+# points = np.array([np.cos(np.linspace(0, 2*np.pi, n)),
+#                    np.sin(np.linspace(0, 2*np.pi, n))]).T
+# noisy_points = points + noise
+# print(noisy_points)
+noisy_points = [[195034.82017151944,1948390.779560565],
 [195034.821157322,1948390.8035023974],
 [195034.8221482442,1948390.8276840348],
 [195034.8230684601,1948390.852093134],
@@ -2907,3 +2919,9 @@
 [195084.36790358677,1948436.7302347582],
 [195084.36790358677,1948436.7302347582],
 [195084.3371144561,1948436.4597816782]]
+noisy_points = np.array(noisy_points)
+print("length of original: ",len(noisy_points))
+# Create ccma-object and smooth points by using padding (default) and Pascal's Triangle kernel/weights (default)
+ccma = CCMA(w_ma=5, w_cc=3)
+smoothed_points = ccma.filter(noisy_points)
+print("length of smooth: ",len(smoothed_points))

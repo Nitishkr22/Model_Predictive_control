@@ -1,4 +1,8 @@
-[[195034.82017151944,1948390.779560565],
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Given X and Y points
+points = [[195034.82017151944,1948390.779560565],
 [195034.821157322,1948390.8035023974],
 [195034.8221482442,1948390.8276840348],
 [195034.8230684601,1948390.852093134],
@@ -2907,3 +2911,27 @@
 [195084.36790358677,1948436.7302347582],
 [195084.36790358677,1948436.7302347582],
 [195084.3371144561,1948436.4597816782]]
+
+
+# Convert points to numpy array for easier manipulation
+points_array = np.array(points)
+print(len(points))
+# Separate X and Y coordinates
+x = points_array[:, 0]
+y = points_array[:, 1]
+
+# Calculate the decimation factor
+decimation_factor = len(x) // 1000  # Determine the decimation factor to reduce 2909 points to 1000
+
+# Decimate points
+decimated_x = x[::decimation_factor]
+decimated_y = y[::decimation_factor]
+print(len(decimated_x))
+# Plot original and decimated points
+plt.plot(x, y, 'bo-', label='Original Points')
+plt.plot(decimated_x, decimated_y, 'r.-', label='Decimated Points')
+plt.xlabel('X Position')
+plt.ylabel('Y Position')
+plt.title('Original and Decimated Points')
+plt.legend()
+plt.show()

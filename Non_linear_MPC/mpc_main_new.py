@@ -209,12 +209,12 @@ for i in range(0,len(X_ref)-1):
     # print("duuu: ",du[0][0],du[1][0])
     # print(type(du))
     # print("Value of du:", du)
-    if du is None or du[0] is None:
-        print("helloaa")
-        # du[0][0] = 0
-        # du[1][0] = 0
-        # U1=U1+steer[-1]
-        continue
+    # if du is None or du[0] is None:
+    #     print("helloaa")
+    #     # du[0][0] = 0
+    #     # du[1][0] = 0
+    #     # U1=U1+steer[-1]
+    #     continue
     # else:
     U1=U1+du[0][0]
     U2=U2+du[1][0]
