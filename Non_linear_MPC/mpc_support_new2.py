@@ -26,7 +26,7 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-        trajectory=4 # Choose 1, 2 or 3, nothing else
+        trajectory=5 # Choose 1, 2 or 3, nothing else
         version=1 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
@@ -98,7 +98,7 @@ class SupportFilesCar:
         # exit()
         return None
     
-    def interpolate_waypoints(self, waypoints, num_intermediate_points=13):  ### 13 for trajector=4
+    def interpolate_waypoints(self, waypoints, num_intermediate_points=1):  ### 13 for trajector=4
         interpolated_waypoints = []
         for i in range(len(waypoints) - 1):
             lat1, lon1 = waypoints[i]
@@ -3431,26 +3431,26 @@ class SupportFilesCar:
             for ss in waypoints:
                 ss.reverse()
 
-            points_array = np.array(waypoints)
-            print(len(points_array))
-            # Separate X and Y coordinates
-            x = points_array[:, 0]
-            y = points_array[:, 1]
+            # points_array = np.array(waypoints)
+            # print(len(points_array))
+            # # Separate X and Y coordinates
+            # x = points_array[:, 0]
+            # y = points_array[:, 1]
 
-            # Calculate the decimation factor
-            decimation_factor = len(x) // 500  # Determine the decimation factor to reduce 2909 points to 1000
+            # # Calculate the decimation factor
+            # decimation_factor = len(x) // 500  # Determine the decimation factor to reduce 2909 points to 1000
 
-            # Decimate points
-            decimated_x = x[::decimation_factor]
-            decimated_y = y[::decimation_factor]
-            print("length after decimation: ",len(decimated_x))
+            # # Decimate points
+            # decimated_x = x[::decimation_factor]
+            # decimated_y = y[::decimation_factor]
+            # print("length after decimation: ",len(decimated_x))
             # print(len(waypoints))
             # f_x=np.array([0,80,110,140,160,110,40,10,40,70,110,150]) *2 # x end ponts for sub trajectories
             # f_y=np.array([40,20,20,60,100,140,140,80,60,60,90,90])*2
-            points_list = [[x, y] for x, y in zip(decimated_x, decimated_y)]
+            # points_list = [[x, y] for x, y in zip(decimated_x, decimated_y)]
             
             #####################################
-            waypoints_updated = self.interpolate_waypoints(points_list)
+            # waypoints_updated = self.interpolate_waypoints(points_list)
             ####################################
             # f_x=np.array([4,80,135,159,157,142,124,91,75,75])*2 # x end ponts for sub trajectories
             # f_y=np.array([4,4,5,27,43,61,60,57,50,40])*2 # y end ponts for sub trajectories
@@ -3462,7 +3462,7 @@ class SupportFilesCar:
             # points_list = [[x, y] for x, y in zip(X, Y)]
             X=[]
             Y=[]
-            for wp in waypoints_updated:
+            for wp in waypoints:
                 X.append(wp[0])
                 Y.append(wp[1])
             # print(len(xtest),len(ytest))
@@ -3471,8 +3471,8 @@ class SupportFilesCar:
             print("length after interpolation: ",len(X),len(Y))
             # X = np.append(X,X[-1])
             # Y = np.append(Y,Y[-1])
-            X = np.array(X[4:])
-            Y = np.array(Y[4:])
+            X = np.array(X[8:])
+            Y = np.array(Y[8:])
             # print(type(np.array(X)))
             
             print(len(X),len(Y))

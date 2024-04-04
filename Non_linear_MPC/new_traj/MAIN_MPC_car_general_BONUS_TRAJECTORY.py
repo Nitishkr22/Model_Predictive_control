@@ -1,6 +1,7 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
-import mpc_support_new2 as sfc_g
+import support_files_car_general_BONUS_TRAJECTORY as sfc_g
 import matplotlib.gridspec as gridspec
 import matplotlib.animation as animation
 from qpsolvers import *
@@ -14,28 +15,15 @@ constants=support.constants
 Ts=constants['Ts']
 outputs=constants['outputs'] # number of outputs (psi, Y)
 hz = constants['hz'] # horizon prediction period
-time_length=constants['time_length'] # duration of the manoeuvre
 inputs=constants['inputs']
 x_lim=constants['x_lim']
 y_lim=constants['y_lim']
-trajectory=constants['trajectory']
 
-# Generate the refence signals
-t=np.zeros((int(time_length/Ts+1)))
-for i in range(1,len(t)):
-    t[i]=np.round(t[i-1]+Ts,2)
 
-# print(len(t))
-# exit()
-
-x_dot_ref,y_dot_ref,psi_ref,X_ref,Y_ref=support.trajectory_generator(t)
+x_dot_ref,y_dot_ref,psi_ref,X_ref,Y_ref,t=support.trajectory_generator()
 sim_length=len(t) # Number of control loop iterations
-print("sim_length: ",sim_length)   ##### sim_length = len(X_ref)
-print(len(X_ref))
-# exit()
 refSignals=np.zeros(len(X_ref)*outputs)
 
-# our reference array will be same like output array i.e. [x_dot,psi,X,Y] we have 4 outputs
 # Build up the reference signal vector:
 # refSignal = [x_dot_ref_0, psi_ref_0, X_ref_0, Y_ref_0, x_dot_ref_1, psi_ref_1, X_ref_1, Y_ref_1, x_dot_ref_2, psi_ref_2, X_ref_2, Y_ref_2, ... etc.]
 k=0
@@ -50,25 +38,18 @@ for i in range(0,len(refSignals),outputs):
 # If you want to put numbers here, please make sure that they are float and not
 # integers. It means that you should add a point there.
 # Example: Please write 0. in stead of 0 (Please add the point to make it float)
-
-#load initial state same as the reference states
-
-
 x_dot=x_dot_ref[0]
 y_dot=y_dot_ref[0]
 psi=psi_ref[0]
 psi_dot=0.
 X=X_ref[0]
 Y=Y_ref[0]
-print(x_dot)
-# exit()
+
 states=np.array([x_dot,y_dot,psi,psi_dot,X,Y])
-statesTotal=np.zeros((len(t),len(states))) #rows,columns # It will keep track of all your states during the entire manoeuvre
-statesTotal[0][0:len(states)]=states  # initialise 1st state
+statesTotal=np.zeros((len(t),len(states))) # It will keep track of all your states during the entire manoeuvre
+statesTotal[0][0:len(states)]=states
 
 ######################### Accelerations ########################################
-
-# initialise net accelerations
 x_dot_dot=0.
 y_dot_dot=0.
 psi_dot_dot=0.
@@ -81,18 +62,15 @@ accelerations_total=np.zeros((len(t),len(accelerations)))
 # Y_opt_total=np.zeros((len(t),hz))
 
 # Load the initial input
-
-U1=0.0 # Input at t = -0.02 s (steering wheel angle in rad (delta))
-U2=0.0 # Input at t = -0.02 s (acceleration in m/s^2 (a))
-
-### next 3 lines not required in real time
-UTotal=np.zeros((len(t),2)) # To keep track all your inputs over time for simulation purpose
+U1=0 # Input at t = -0.02 s (steering wheel angle in rad (delta))
+U2=0 # Input at t = -0.02 s (acceleration in m/s^2 (a))
+UTotal=np.zeros((len(t),2)) # To keep track all your inputs over time
 UTotal[0][0]=U1
 UTotal[0][1]=U2
 
 # Initiate the controller - simulation loops
 k=0
-du=np.zeros((inputs*hz,1))  # this is du6 global, inputs=2
+du=np.zeros((inputs*hz,1))
 
 # # To extract X_opt from predicted x_aug_opt
 # C_X_opt=np.zeros((hz,(len(states)+np.size(U1)+np.size(U2))*hz))
@@ -105,32 +83,17 @@ du=np.zeros((inputs*hz,1))  # this is du6 global, inputs=2
 #     C_Y_opt[i-5][i+7*(i-5)]=1
 
 # Arrays for the animation - every 5th state goes in there (once in 0.1 seconds, because Ts=0.02 seconds)
-
 t_ani=[]
 x_dot_ani=[]
 psi_ani=[]
 X_ani=[]
 Y_ani=[]
 delta_ani=[]
-steer = []
-dub = []
-print(sim_length)
 
-# exit()
-X_last = refSignals[-2]
-Y_last = refSignals[-1]
-xy = [X_last,Y_last]
+for i in range(0,sim_length-1):
 
-for i in range(0,len(X_ref)-1):
 
-    # X_upt = states[-2]
-    # Y_upt = states[-1]
-    position = [states[-2],states[-1]]
-    current_ref = [X_ref[i],Y_ref[i]]
-    dist =  ((np.linalg.norm(np.array(position) - xy)) )
-    # dist =  ((np.linalg.norm(np.array(position) - current_ref)) )
-    # print("distance: ",dist)
-    # Generate the discrete state space matrices from current state and current inputs
+    # Generate the discrete state space matrices
     Ad,Bd,Cd,Dd=support.state_space(states,U1,U2)
 
     # Generate the augmented current state and the reference vector
@@ -144,15 +107,11 @@ for i in range(0,len(X_ref)-1):
     if k+outputs*hz<=len(refSignals):
         r=refSignals[k:k+outputs*hz]
     else:
-        print("hello")
         r=refSignals[k:len(refSignals)]
         hz=hz-1
-        print(k)
 
     # Generate the compact simplification matrices for the cost function
-    Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du)
-
-
+    Hdb,Fdbt,Cdb,Adc,G,ht=support.mpc_simplification(Ad,Bd,Cd,Dd,hz,x_aug_t,du,i)
     ft=np.matmul(np.concatenate((np.transpose(x_aug_t)[0][0:len(x_aug_t)],r),axis=0),Fdbt)
     # Hdb=np.array([[10.,1.],[1.,10.]])
     # ft=np.array([0.,0.])
@@ -165,7 +124,6 @@ for i in range(0,len(X_ref)-1):
         # print(du)
         # exit()
     except ValueError as ve:
-        print("dddddddddddddddddddddddd", ve)
         print(Hdb)
         print(ft)
         print(G)
@@ -174,52 +132,36 @@ for i in range(0,len(X_ref)-1):
         print(x_aug_t)
         print(du)
         print(i)
-        break
+        break;
 
     #############################################################################
 
-    # # No constraints
+    # No constraints
     # du=-np.matmul(np.linalg.inv(Hdb),np.transpose([ft]))
 
     # # Predicted states
     # x_aug_opt=np.matmul(Cdb,du)+np.matmul(Adc,x_aug_t)
     # X_opt=np.matmul(C_X_opt[0:hz,0:(len(states)+np.size(U1)+np.size(U2))*hz],x_aug_opt)
     # Y_opt=np.matmul(C_Y_opt[0:hz,0:(len(states)+np.size(U1)+np.size(U2))*hz],x_aug_opt)
-    #
+    
     # X_opt=np.transpose((X_opt))[0]
     # X_opt_total[i+1][0:hz]=X_opt
     # Y_opt=np.transpose((Y_opt))[0]
     # Y_opt_total[i+1][0:hz]=Y_opt
 
     # Update the real inputs
+    # steer_output =  U1*(180/np.pi)
 
-    steer_output =  U1*(180/np.pi)
-
-    steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
-    steer_output = (50/3)*steer_output
-    steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
+    # steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
+    # steer_output = (50/3)*steer_output
+    # steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
     # print("steeering: ",steer_output)
     # print("acceleration: ",U2)
-    steer.append(steer_output)
-    
 
-    # print(dub[-1][0][0])
 
-    # 
-    # print("duuu: ",du[0][0],du[1][0])
-    # print(type(du))
-    # print("Value of du:", du)
-    # if du is None or du[0] is None:
-    #     print("helloaa")
-    #     # du[0][0] = 0
-    #     # du[1][0] = 0
-    #     # U1=U1+steer[-1]
-    #     continue
-    # else:
+
     U1=U1+du[0][0]
     U2=U2+du[1][0]
-    
-    dub.append(du)
 
     UTotal[i+1][0]=U1
     UTotal[i+1][1]=U2
@@ -227,7 +169,7 @@ for i in range(0,len(X_ref)-1):
     states,x_dot_dot,y_dot_dot,psi_dot_dot=support.open_loop_new_states(states,U1,U2)
     statesTotal[i+1][0:len(states)]=states
 
-    ######################### Accelerations ###################################
+    ######################### Accelerations ####################################
     accelerations=np.array([x_dot_dot,y_dot_dot,psi_dot_dot])
     accelerations_total[i+1][0:len(accelerations)]=accelerations
 
@@ -244,9 +186,8 @@ for i in range(0,len(X_ref)-1):
         Y_ani=np.concatenate([Y_ani,[states[5]]])
         delta_ani=np.concatenate([delta_ani,[U1]])
 
+################################ ANIMATION LOOP ###############################
 
-######################## ANIMATION LOOP ###############################
-# exit()
 frame_amount=len(X_ani)
 lf=constants['lf']
 lr=constants['lr']
@@ -306,6 +247,8 @@ ax0.grid(True)
 plt.title('Autonomous vehicle animation (5x faster than the reality)',size=15)
 plt.xlabel('X-position [m]',fontsize=15)
 plt.ylabel('Y-position [m]',fontsize=15)
+plt.xlim(-50,x_lim)
+plt.ylim(-30,y_lim)
 
 # Plot the reference trajectory
 ref_trajectory=ax0.plot(X_ref,Y_ref,'b',linewidth=1)
@@ -316,12 +259,8 @@ car_1,=ax0.plot([],[],'k',linewidth=3)
 car_determined,=ax0.plot([],[],'-r',linewidth=1)
 
 # Zoomed vehicle
-if trajectory==1:
-    ax1=fig.add_subplot(gs[0:6,0:5],facecolor=(0.9,0.9,0.9))
-elif trajectory==2:
-    ax1=fig.add_subplot(gs[3:9,2:7],facecolor=(0.9,0.9,0.9))
-else:
-    ax1=fig.add_subplot(gs[2:6,2:5],facecolor=(0.9,0.9,0.9))
+ax1=fig.add_subplot(gs[4:8,2:6],facecolor=(0.9,0.9,0.9))
+
 ax1.axes.get_xaxis().set_visible(False)
 ax1.axes.get_yaxis().set_visible(False)
 
@@ -401,7 +340,7 @@ plt.show()
 # # Matplotlib 3.3.3 needed - close the animation itself to start the recording process
 # Writer=animation.writers['ffmpeg']
 # writer=Writer(fps=30,metadata={'artist': 'Me'},bitrate=1800)
-# car_ani.save('car_mpc_demo_traj3_v2.mp4',writer)
+# car_ani.save('car_mpc_demo_BONUS_TRAJECTORY.mp4',writer)
 ##################### END OF THE ANIMATION ############################
 
 
@@ -413,10 +352,10 @@ plt.xlabel('X-position [m]',fontsize=15)
 plt.ylabel('Y-position [m]',fontsize=15)
 plt.grid(True)
 plt.legend(loc='upper right',fontsize='small')
-plt.xlim(0,x_lim)
-plt.ylim(0,y_lim)
+plt.xlim(-50,x_lim)
+plt.ylim(-30,y_lim)
 plt.xticks(np.arange(0,x_lim+1,int(x_lim/10)))
-plt.yticks(np.arange(0,y_lim+1,int(y_lim/10)))
+plt.yticks(np.arange(-50,y_lim+1,int(y_lim/10)))
 plt.show()
 
 
