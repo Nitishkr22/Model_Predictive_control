@@ -3478,7 +3478,7 @@ class SupportFilesCar:
             print(len(X),len(Y))
             # print(len(X))
             # print(X.shape)
-            # exit()
+            exit()
             ################
             # Plot the world
             # plt.plot(X,Y,'b',linewidth=2,label='The trajectory')
