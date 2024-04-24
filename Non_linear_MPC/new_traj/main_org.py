@@ -1,7 +1,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import support_files_car_general_BONUS_TRAJECTORY as sfc_g
+import support_org as sfc_g
 import matplotlib.gridspec as gridspec
 import matplotlib.animation as animation
 from qpsolvers import *
@@ -13,7 +13,7 @@ constants=support.constants
 
 # Load the constant values needed in the main file
 Ts=constants['Ts']
-outputs=constants['outputs'] # number of outputs (psi,Y)
+outputs=constants['outputs'] # number of outputs (psi, Y)
 hz = constants['hz'] # horizon prediction period
 inputs=constants['inputs']
 x_lim=constants['x_lim']
@@ -166,14 +166,6 @@ for i in range(0,sim_length-1):
     UTotal[i+1][0]=U1
     UTotal[i+1][1]=U2
 
-    # steer_output =  U1*(180/np.pi)
-
-    # steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
-    # steer_output = (50/3)*steer_output
-    # steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
-    # print("steeering: ",steer_output)
-    # print("acceleration: ",U2)
-
     states,x_dot_dot,y_dot_dot,psi_dot_dot=support.open_loop_new_states(states,U1,U2)
     statesTotal[i+1][0:len(states)]=states
 
@@ -255,7 +247,7 @@ ax0.grid(True)
 plt.title('Autonomous vehicle animation (5x faster than the reality)',size=15)
 plt.xlabel('X-position [m]',fontsize=15)
 plt.ylabel('Y-position [m]',fontsize=15)
-# plt.xlim(-50,x_lim)
+plt.xlim(-50,x_lim)
 plt.ylim(-30,y_lim)
 
 # Plot the reference trajectory
@@ -360,9 +352,9 @@ plt.xlabel('X-position [m]',fontsize=15)
 plt.ylabel('Y-position [m]',fontsize=15)
 plt.grid(True)
 plt.legend(loc='upper right',fontsize='small')
-# plt.xlim(-50,x_lim)
-# plt.ylim(-30,y_lim)
-# plt.xticks(np.arange(0,x_lim+1,int(x_lim/10)))
+plt.xlim(-50,x_lim)
+plt.ylim(-30,y_lim)
+plt.xticks(np.arange(0,x_lim+1,int(x_lim/10)))
 plt.yticks(np.arange(-50,y_lim+1,int(y_lim/10)))
 plt.show()
 
@@ -372,7 +364,6 @@ plt.plot(t,UTotal[:,0],'r',linewidth=1,label='steering wheel angle')
 plt.xlabel('t-time [s]',fontsize=15)
 plt.ylabel('steering wheel angle [rad]',fontsize=15)
 plt.grid(True)
-plt.ylim(-1, 1)
 plt.legend(loc='lower right',fontsize='small')
 
 plt.subplot(2,1,2)
@@ -391,7 +382,6 @@ plt.plot(t,statesTotal[:,2],'r',linewidth=1,label='Car yaw angle')
 plt.xlabel('t-time [s]',fontsize=15)
 plt.ylabel('psi_ref-position [rad]',fontsize=15)
 plt.grid(True)
-plt.ylim(-1, 1)
 plt.legend(loc='lower right',fontsize='small')
 
 plt.subplot(3,1,2)
@@ -426,7 +416,6 @@ plt.plot(t,statesTotal[:,1],'r',linewidth=1,label='y_dot')
 plt.xlabel('t-time [s]',fontsize=15)
 plt.ylabel('y_dot [m/s]',fontsize=15)
 plt.grid(True)
-plt.ylim(-1, 1)
 plt.legend(loc='center right',fontsize='small')
 
 plt.subplot(3,1,3)
@@ -434,7 +423,6 @@ plt.plot(t,statesTotal[:,3],'r',linewidth=1,label='psi_dot')
 plt.xlabel('t-time [s]',fontsize=15)
 plt.ylabel('psi_dot [rad/s]',fontsize=15)
 plt.grid(True)
-plt.ylim(-1, 1)
 plt.legend(loc='upper right',fontsize='small')
 plt.show()
 

@@ -26,8 +26,8 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-        trajectory=5 # Choose 1, 2 or 3, nothing else
-        version=1 # This is only for trajectory 3 (Choose 1 or 2)
+        trajectory=1 # Choose 1, 2 or 3, nothing else
+        version=2 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
 
@@ -38,8 +38,8 @@ class SupportFilesCar:
             R=np.matrix('100 0;0 1') # weights for inputs
         elif trajectory==3 or trajectory==4 or trajectory==5:
             # Weights for trajectory 3, version 1
-            Q=np.matrix('1 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for outputs (all samples, except the last one)
-            S=np.matrix('1 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for the final horizon period outputs
+            Q=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for outputs (all samples, except the last one)
+            S=np.matrix('100 0 0 0;0 20000 0 0;0 0 1000 0;0 0 0 1000') # weights for the final horizon period outputs
             R=np.matrix('100 0;0 1') # weights for inputs
         else:
             # Weights for trajectories 1 & 2
@@ -98,7 +98,7 @@ class SupportFilesCar:
         # exit()
         return None
     
-    def interpolate_waypoints(self, waypoints, num_intermediate_points=9):  ### 13 for trajector=4
+    def interpolate_waypoints(self, waypoints, num_intermediate_points=13):  ### 13 for trajector=4 and 9 for traj 5
         interpolated_waypoints = []
         for i in range(len(waypoints) - 1):
             lat1, lon1 = waypoints[i]
@@ -885,7 +885,7 @@ class SupportFilesCar:
         # plt.show()
         # exit()
         # print("enddd: ",len(x_dot_body),(len(y_dot_body)),(len(psiInt)),(len(X)),(len(Y)))
-        exit()
+        # exit()
         return x_dot_body,y_dot_body,psiInt,X,Y
 
     def state_space(self,states,delta,a):
@@ -1183,6 +1183,6 @@ class SupportFilesCar:
         new_states[3]=psi_dot
         new_states[4]=X  # pass gps x and y coordinate only
         new_states[5]=Y
-        print("new_states: ",new_states)
-        print("psi_value: ",np.rad2deg(psi))
+        # print("new_states: ",new_states)
+        # print("psi_value: ",np.rad2deg(psi))
         return new_states,x_dot_dot,y_dot_dot,psi_dot_dot

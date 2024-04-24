@@ -199,8 +199,8 @@ for i in range(0,len(X_ref)-1):
     steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
     steer_output = (50/3)*steer_output
     steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
-    # print("steeering: ",steer_output)
-    # print("acceleration: ",U2)
+    print("steeering: ",steer_output)
+    print("acceleration: ",U2)
     steer.append(steer_output)
     
 

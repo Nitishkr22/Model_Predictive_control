@@ -98,7 +98,7 @@ class SupportFilesCar:
         # exit()
         return None
     
-    def interpolate_waypoints(self, waypoints, num_intermediate_points=1):  ### 13 for trajector=4
+    def interpolate_waypoints(self, waypoints, num_intermediate_points=13):  ### 13 for trajector=4
         interpolated_waypoints = []
         for i in range(len(waypoints) - 1):
             lat1, lon1 = waypoints[i]
