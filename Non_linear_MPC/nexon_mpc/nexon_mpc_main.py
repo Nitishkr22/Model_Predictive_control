@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import mpc_support_new2 as sfc_g
+# import support_files_car_general as sfc_g
 import matplotlib.gridspec as gridspec
 import matplotlib.animation as animation
 from qpsolvers import *
@@ -231,15 +232,18 @@ for i in range(0,len(X_ref)-1):
     steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
     steer_output = (50/3)*steer_output
     steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
-    # print("steeering: ",steer_output)
+    print("steeering: ",steer_output)
     # print("acceleration: ",U2)
     steer.append(steer_output)
     
     ############ cotroller input #################
+    # print(feed)
     steering_feedback = obj.receive_data().split(',')[2]
+    # print("aaaaafter: ",feed)
+    print("steering feedback: ",steering_feedback)
     steer_rate = pid_controller.update(steer_output, float(steering_feedback))
-    obj.send_data("A,D,0,1,15,1,"+str(steer_rate)+",0,0,0,0\r\n")
-    print("Steer Rate: ",type(steer_rate))
+    obj.send_data("A4,D,0,1,15,1,"+str(steer_rate)+",0,0,0,0\r\n")
+    print("Steer Rate: ",steer_rate)
     #############################################
     # print(dub[-1][0][0])
 

@@ -26,7 +26,7 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-        trajectory=5 # Choose 1, 2 or 3, nothing else
+        trajectory=3 # Choose 1, 2 or 3, nothing else
         version=1 # This is only for trajectory 3 (Choose 1 or 2)
 
         # Matrix weights for the cost function (They must be diagonal)
@@ -98,7 +98,7 @@ class SupportFilesCar:
         # exit()
         return None
     
-    def interpolate_waypoints(self, waypoints, num_intermediate_points=1):  ### 13 for trajector=4
+    def interpolate_waypoints(self, waypoints, num_intermediate_points=13):  ### 13 for trajector=4
         interpolated_waypoints = []
         for i in range(len(waypoints) - 1):
             lat1, lon1 = waypoints[i]

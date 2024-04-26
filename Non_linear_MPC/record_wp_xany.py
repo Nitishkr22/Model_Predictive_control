@@ -2,6 +2,7 @@ from novatel_oem7_msgs.msg import BESTPOS
 from novatel_oem7_msgs.msg import BESTVEL
 from novatel_oem7_msgs.msg import INSPVA
 from novatel_oem7_msgs.msg import BESTUTM
+from novatel_oem7_msgs.msg import CORRIMU
 # from novatel_gps_msgs.msg import 
 from nav_msgs.msg import Odometry
 
@@ -11,6 +12,7 @@ import time
 x_pos = 0.0
 y_pos = 0.0
 gnss_vel = 0.0
+yaw_rate = 0.0
 # def callback_latlong(data):
 #     global lat,lng
 #     lat = data.lat
@@ -36,6 +38,9 @@ def callback_heading(data):
     east_vel = data.east_velocity
     heading = data.azimuth
       
+def callback_imu(data):
+    global yaw_rate
+    yaw_rate = data.yaw_rate
 
 rospy.init_node('Navigation', anonymous=True)
 #ROS subscription
@@ -43,7 +48,7 @@ rospy.init_node('Navigation', anonymous=True)
 rospy.Subscriber("/novatel/oem7/inspva",INSPVA, callback_heading)
 rospy.Subscriber("/novatel/oem7/bestvel",BESTVEL, callback_vel)
 rospy.Subscriber("/novatel/oem7/odom",Odometry, callback_xandy)
-
+rospy.Subscriber("/novatel/oem7/corrimu",CORRIMU, callback_imu)
 
 
 global new_file
@@ -52,9 +57,9 @@ file=open(new_file,"w")
 
 while not rospy.is_shutdown():
     # global lat,lng
-    time.sleep(0.1)
+    time.sleep(0.2)
     file = open(str(new_file), "a")
     print("done")
-    file.writelines("["+str(time.time())+","+str(easting)+","+str(northing)+","+str(north_vel)+","+str(east_vel)+","+str(heading)+"],\n")
+    file.writelines("["+str(time.time())+","+str(easting)+","+str(northing)+","+str(east_vel)+","+str(north_vel)+","+str(heading)+","+str(yaw_rate)+"],\n")
     file.close()
     # print(x_pos,y_pos)
