@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import mpc_support_new2 as sfc_g
+# import support_files_car_general as sfc_g
 import matplotlib.gridspec as gridspec
 import matplotlib.animation as animation
 from qpsolvers import *
@@ -198,8 +199,8 @@ for i in range(0,len(X_ref)-1):
     steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
     steer_output = (50/3)*steer_output
     steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
-    # print("steeering: ",steer_output)
-    # print("acceleration: ",U2)
+    print("steeering: ",steer_output)
+    print("acceleration: ",U2)
     steer.append(steer_output)
     
 
@@ -303,7 +304,7 @@ plt.subplots_adjust(left=0.05,bottom=0.08,right=0.95,top=0.95,wspace=0.15,hspace
 
 ax0=fig.add_subplot(gs[:,0:9],facecolor=(0.9,0.9,0.9))
 ax0.grid(True)
-plt.title('Autonomous vehicle animation (5x faster than the reality)',size=15)
+# plt.title('Autonomous vehicle animation (5x faster than the reality)',size=15)
 plt.xlabel('X-position [m]',fontsize=15)
 plt.ylabel('Y-position [m]',fontsize=15)
 

@@ -15,8 +15,8 @@ np.set_printoptions(suppress=True)
 
 
 #TCP connection
-obj = actuator.controller("169.254.178.227",5001)
-obj.connect()
+# obj = actuator.controller("169.254.178.227",5001)
+# obj.connect()
 
 #PID controller
 Kp = 1.65971
@@ -26,19 +26,19 @@ rate_min = -100
 rate_max = 100
 pid_controller = pid.PIDController(Kp, Ki, Kd, rate_min, rate_max)
 
-message = "A,N,0,0,0,0,0,0,0,0,0\r\n" 
-obj.send_data(message)
-feed = obj.receive_data()
-print(feed)
-message = "A,N,0,1,100,0,0,0,0,0,0\r\n"
-obj.send_data(message)
-time.sleep(1)
-feed = obj.receive_data()
-print(feed)
-message = "A,D,0,0,0,0,0,0,0,0,0 \r\n"
-obj.send_data(message)
-feed = obj.receive_data()
-print(feed)
+# message = "A,N,0,0,0,0,0,0,0,0,0\r\n" 
+# obj.send_data(message)
+# feed = obj.receive_data()
+# print(feed)
+# message = "A,N,0,1,100,0,0,0,0,0,0\r\n"
+# obj.send_data(message)
+# time.sleep(1)
+# feed = obj.receive_data()
+# print(feed)
+# message = "A,D,0,0,0,0,0,0,0,0,0 \r\n"
+# obj.send_data(message)
+# feed = obj.receive_data()
+# print(feed)
 
 # Create an object for the support functions.
 support=sfc_g.SupportFilesCar()
@@ -237,6 +237,7 @@ for i in range(0,len(X_ref)-1):
     steer.append(steer_output)
     
     ############ cotroller input #################
+<<<<<<< HEAD
     # print(feed)
     steering_feedback = obj.receive_data().split(',')[2]
     # print("aaaaafter: ",feed)
@@ -244,6 +245,12 @@ for i in range(0,len(X_ref)-1):
     steer_rate = pid_controller.update(steer_output, float(steering_feedback))
     obj.send_data("A4,D,0,1,15,1,"+str(steer_rate)+",0,0,0,0\r\n")
     print("Steer Rate: ",steer_rate)
+=======
+    # steering_feedback = obj.receive_data().split(',')[2]
+    # steer_rate = pid_controller.update(steer_output, float(steering_feedback))
+    # obj.send_data("A,D,0,1,15,1,"+str(steer_rate)+",0,0,0,0\r\n")
+    # print("Steer Rate: ",type(steer_rate))
+>>>>>>> 75f5f75004a4d00df092a70e9f631747225f2a9c
     #############################################
     # print(dub[-1][0][0])
 

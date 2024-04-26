@@ -30,52 +30,15 @@ class SupportFilesCar:
         S=np.matrix('20000 0 0 0;0 40000 0 0;0 0 20000 0;0 0 0 20000') # weights for the final horizon period outputs
         R=np.matrix('200 0;0 20') # weights for inputs
 
-        x_lim=3000000   #600
-        y_lim=3000000        #350
+        x_lim=600
+        y_lim=350
 
         self.constants={'g':g,'m':m,'Iz':Iz,'Cf':Cf,'Cr':Cr,'lf':lf,'lr':lr,\
         'Ts':Ts,'mju':mju,'Q':Q,'S':S,'R':R,'outputs':outputs,'inputs':inputs,\
         'hz':hz,'x_lim':x_lim,'y_lim':y_lim}
         # exit()
         return None
-################################
-    def calculate_steer_angle(currentLocation, wp, heading):
-        """
-        This function takes three inputs:
-            - currentLocation: a list of two float values representing the current location
-            - wp: a waypoint value
-            - heading: a heading value
-        It then calculates the steer output based on the current location, waypoint, and heading, and returns the steer output value.
-        """
-        off_y = - currentLocation[0] + float(waypoints[wp][0])
-        off_x = - currentLocation[1] + float(waypoints[wp][1])
 
-        # calculate bearing based on position error
-        bearing_ppc =90.00 + math.atan2(-off_y, off_x) * 57.2957795  # Adding 90.00 is a common adjustment to align the bearing with cardinal directions (e.g., north as 0 degrees).
-
-        # convert negative bearings to positive by adding 360 degrees
-        if bearing_ppc < 0:
-            bearing_ppc += 360.00
-
-        # calculate the difference between heading and bearing
-        bearing_diff = heading - bearing_ppc
-
-        # normalize bearing difference to range between -180 and 180 degrees
-        if bearing_diff < -180:
-            bearing_diff = bearing_diff + 360
-
-        if bearing_diff > 180:
-            bearing_diff = bearing_diff - 360
-
-        # steer_output =  np.arctan(-1 * 2 * 3.5 * np.sin(np.pi * bearing_diff / 180) / 8)*(180/np.pi)
-
-        # steer_output = np.clip(steer_output, a_min = -30, a_max = 30)
-        # steer_output = (50/3)*steer_output
-        # steer_output = np.clip(steer_output, a_min = -500, a_max = 500)
-
-        return bearing_diff
-    
-################################    
     def trajectory_generator(self):
         '''This method creates the trajectory for a car to follow'''
 
@@ -95,15 +58,15 @@ class SupportFilesCar:
         Y=[]
 
         x_dot_body_i_1=2
-        x_dot_body_f_1=2
-        x_dot_body_max_1=10
-        psiInt_i_1= np.deg2rad(1.417295759369303)  #0.09976697616901359 # np.deg2rad(1.417295759369303)        #0
+        x_dot_body_f_1=5
+        x_dot_body_max_1=30
+        psiInt_i_1=0
         delta_t_increase_1=7
         delta_t_decrease_1=10
-        X_i_1=1948411.5864638456  #50
-        X_slow_down_1=1948444.5386642516        #270
-        X_f_1=1948535.6550925688  #450  #northing
-        Y_i_1=195034.65114699095  #0    #easting
+        X_i_1=50
+        X_slow_down_1=270
+        X_f_1=450
+        Y_i_1=0
 
         x_dot_body=np.append(x_dot_body,x_dot_body_i_1)
         psiInt=np.append(psiInt,psiInt_i_1)
@@ -117,20 +80,16 @@ class SupportFilesCar:
         while x_dot_body[-1] < x_dot_body_max_1:
             t=np.append(t,t[-1]+Ts)
             x_dot_body=np.append(x_dot_body,A_increase_1*np.sin(2*np.pi*f_increase_1*(t[-1]-delta_t_increase_1/2))+C_increase_1)
-            psiInt=np.append(psiInt,psiInt_i_1)
-            # X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
-            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-            # Y=np.append(Y,Y_i_1)
-            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+            psiInt=np.append(psiInt,0)
+            X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
+            Y=np.append(Y,0)
             
         while X[-1]<=X_slow_down_1:
             t=np.append(t,t[-1]+Ts)
             x_dot_body=np.append(x_dot_body,x_dot_body_max_1)
-            psiInt=np.append(psiInt,psiInt_i_1)
-            # X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
-            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-            # Y=np.append(Y,Y_i_1)
-            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+            psiInt=np.append(psiInt,0)
+            X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
+            Y=np.append(Y,0)
 
         t_temp_1=t[-1]
         A_decrease_1=(x_dot_body_max_1-x_dot_body_f_1)/2
@@ -140,39 +99,34 @@ class SupportFilesCar:
         while x_dot_body[-1] > x_dot_body_f_1:
             t=np.append(t,t[-1]+Ts)
             x_dot_body=np.append(x_dot_body,A_decrease_1*np.cos(2*np.pi*f_decrease_1*(t[-1]-t_temp_1))+C_decrease_1)
-            psiInt=np.append(psiInt,psiInt_i_1)
-            # X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
-            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-            # Y=np.append(Y,Y_i_1)
-            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+            psiInt=np.append(psiInt,0)
+            X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
+            Y=np.append(Y,0)
 
         while X[-1]<X_f_1:
-            # print("ddddd")
             t=np.append(t,t[-1]+Ts)
             x_dot_body=np.append(x_dot_body,x_dot_body_f_1)
-            psiInt=np.append(psiInt,psiInt_i_1)
-            # X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
-            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-            # Y=np.append(Y,Y_i_1)
-            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+            psiInt=np.append(psiInt,0)
+            X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
+            Y=np.append(Y,0)
 
 
         # Section 2
-        # turn_radius_2=50
-        # turn_angle_2=np.pi/2
-        # final_Y_2=100
+        turn_radius_2=150   #50
+        turn_angle_2=np.pi  #np.pi/2
+        final_Y_2=100
 
-        # turn_distance_2=turn_angle_2*turn_radius_2
-        # turn_time_2=turn_distance_2/x_dot_body[-1]
-        # angular_velocity_2=turn_angle_2/turn_time_2
+        turn_distance_2=turn_angle_2*turn_radius_2
+        turn_time_2=turn_distance_2/x_dot_body[-1]
+        angular_velocity_2=turn_angle_2/turn_time_2
 
-        # while psiInt[-1]<turn_angle_2:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1]+angular_velocity_2*Ts)
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-        #     # No need to worry about the reference y_dot, it is always 0 in the body frame
+        while psiInt[-1]<turn_angle_2:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1]+angular_velocity_2*Ts)
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+            # No need to worry about the reference y_dot, it is always 0 in the body frame
 
         # while Y[-1]<final_Y_2:
         #     t=np.append(t,t[-1]+Ts)
@@ -370,7 +324,7 @@ class SupportFilesCar:
         # plt.legend(loc='upper right',fontsize='small')
         # plt.show()
         # #
-        # Plot the reference yaw angle
+        # # Plot the reference yaw angle
         # plt.plot(t,psiInt,'g',linewidth=2,label='Psi ref')
         # plt.xlabel('t [s]',fontsize=15)
         # plt.ylabel('Psi_ref [rad]',fontsize=15)
@@ -682,4 +636,3 @@ class SupportFilesCar:
         new_states[5]=Y
 
         return new_states,x_dot_dot,y_dot_dot,psi_dot_dot
-
