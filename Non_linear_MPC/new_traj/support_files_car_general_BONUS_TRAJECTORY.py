@@ -97,7 +97,7 @@ class SupportFilesCar:
         x_dot_body_i_1=2
         x_dot_body_f_1=2
         x_dot_body_max_1=10
-        psiInt_i_1= 0.09976697616901359 # np.deg2rad(1.417295759369303)        #0
+        psiInt_i_1= np.deg2rad(1.417295759369303)  #0.09976697616901359 # np.deg2rad(1.417295759369303)        #0
         delta_t_increase_1=7
         delta_t_decrease_1=10
         X_i_1=1948411.5864638456  #50
@@ -110,7 +110,6 @@ class SupportFilesCar:
         X=np.append(X,X_i_1)
         Y=np.append(Y,Y_i_1)
         t=np.append(t,0)
-
 
         A_increase_1=(x_dot_body_max_1-x_dot_body_i_1)/2
         f_increase_1=1/(2*delta_t_increase_1)

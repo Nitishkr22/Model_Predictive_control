@@ -112,8 +112,8 @@ class SupportFilesCar:
 
 
         # Section 2
-        turn_radius_2=50
-        turn_angle_2=np.pi/2
+        turn_radius_2=150   #50
+        turn_angle_2=np.pi  #np.pi/2
         final_Y_2=100
 
         turn_distance_2=turn_angle_2*turn_radius_2
@@ -128,13 +128,13 @@ class SupportFilesCar:
             Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
             # No need to worry about the reference y_dot, it is always 0 in the body frame
 
-        while Y[-1]<final_Y_2:
-            t=np.append(t,t[-1]+Ts)
-            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-            psiInt=np.append(psiInt,psiInt[-1])
-            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-        t_temp_2=t[-1]
+        # while Y[-1]<final_Y_2:
+        #     t=np.append(t,t[-1]+Ts)
+        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+        #     psiInt=np.append(psiInt,psiInt[-1])
+        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        # t_temp_2=t[-1]
 
 
         # # Section 3
