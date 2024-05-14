@@ -226,6 +226,8 @@ for i in range(0,len(X_ref)-1):
     UTotal[i+1][1]=U2
 
     states,x_dot_dot,y_dot_dot,psi_dot_dot=support.open_loop_new_states(states,U1,U2)
+
+    
     statesTotal[i+1][0:len(states)]=states
 
     ######################### Accelerations ###################################

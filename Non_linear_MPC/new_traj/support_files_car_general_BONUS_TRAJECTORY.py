@@ -97,7 +97,7 @@ class SupportFilesCar:
         x_dot_body_i_1=2
         x_dot_body_f_1=2
         x_dot_body_max_1=10
-        psiInt_i_1= np.deg2rad(1.417295759369303)  #0.09976697616901359 # np.deg2rad(1.417295759369303)        #0
+        psiInt_i_1= np.deg2rad(1.417295759369303)  #0.09976697616901359 # np.deg2rad(1.417295759369303) #0
         delta_t_increase_1=7
         delta_t_decrease_1=10
         X_i_1=1948411.5864638456  #50
@@ -117,12 +117,13 @@ class SupportFilesCar:
         while x_dot_body[-1] < x_dot_body_max_1:
             t=np.append(t,t[-1]+Ts)
             x_dot_body=np.append(x_dot_body,A_increase_1*np.sin(2*np.pi*f_increase_1*(t[-1]-delta_t_increase_1/2))+C_increase_1)
+            
             psiInt=np.append(psiInt,psiInt_i_1)
             # X=np.append(X,X[-1]+x_dot_body[-1]*Ts)
             X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
             # Y=np.append(Y,Y_i_1)
             Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-            
+
         while X[-1]<=X_slow_down_1:
             t=np.append(t,t[-1]+Ts)
             x_dot_body=np.append(x_dot_body,x_dot_body_max_1)
@@ -155,7 +156,12 @@ class SupportFilesCar:
             X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
             # Y=np.append(Y,Y_i_1)
             Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-
+                # print((x_dot_body))
+        plt.plot(X,Y)
+        # plt.xlabel('X-position [m]',fontsize=15)
+        # plt.ylabel('Y-position [m]',fontsize=15)
+        plt.show()
+        exit()
 
         # Section 2
         # turn_radius_2=50

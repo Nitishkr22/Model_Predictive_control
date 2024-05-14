@@ -26,13 +26,8 @@ class SupportFilesCar:
         inputs=2 # number of inputs
         hz = 10 # horizon period
 
-<<<<<<< HEAD
-        trajectory=3 # Choose 1, 2 or 3, nothing else
-        version=1 # This is only for trajectory 3 (Choose 1 or 2)
-=======
         trajectory=1 # Choose 1, 2 or 3, nothing else
         version=2 # This is only for trajectory 3 (Choose 1 or 2)
->>>>>>> 75f5f75004a4d00df092a70e9f631747225f2a9c
 
         # Matrix weights for the cost function (They must be diagonal)
 
@@ -103,11 +98,7 @@ class SupportFilesCar:
         # exit()
         return None
     
-<<<<<<< HEAD
-    def interpolate_waypoints(self, waypoints, num_intermediate_points=13):  ### 13 for trajector=4
-=======
     def interpolate_waypoints(self, waypoints, num_intermediate_points=13):  ### 13 for trajector=4 and 9 for traj 5
->>>>>>> 75f5f75004a4d00df092a70e9f631747225f2a9c
         interpolated_waypoints = []
         for i in range(len(waypoints) - 1):
             lat1, lon1 = waypoints[i]
@@ -835,7 +826,8 @@ class SupportFilesCar:
         #if X = [a,b,c,d,e] then dx = [b-a,c-b,d-c,e-d] sam is for dy   
         dX=X[1:len(X)]-X[0:len(X)-1]  # can also achieved by dX = np.diff(X)
         dY=Y[1:len(Y)]-Y[0:len(Y)-1]  # or np.diff(Y)
-
+        np.save('X_p1.npy', X)
+        np.save('Y_p1.npy', Y)
         # calculate X_dot and Y_dot, Ts = 0.02
         X_dot=dX/Ts
         Y_dot=dY/Ts

@@ -132,7 +132,7 @@ for i in range(0,sim_length-1):
         print(x_aug_t)
         print(du)
         print(i)
-        break;
+        break
 
     #############################################################################
 
