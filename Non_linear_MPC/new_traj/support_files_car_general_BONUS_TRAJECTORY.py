@@ -157,11 +157,11 @@ class SupportFilesCar:
             # Y=np.append(Y,Y_i_1)
             Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
                 # print((x_dot_body))
-        plt.plot(X,Y)
+        # plt.plot(X,Y)
         # plt.xlabel('X-position [m]',fontsize=15)
         # plt.ylabel('Y-position [m]',fontsize=15)
-        plt.show()
-        exit()
+        # plt.show()
+        # exit()
 
         # Section 2
         # turn_radius_2=50

@@ -1,0 +1,8 @@
+prefix=/home/radar/Documents/MPC/Model_Predictive_control/gensis_mpc/devel
+
+Name: genesis_path_follower
+Description: Description of genesis_path_follower
+Version: 0.0.1
+Cflags: -I/home/radar/Documents/MPC/Model_Predictive_control/gensis_mpc/devel/include
+Libs: -L${prefix}/lib 
+Requires: message_runtime std_msgs

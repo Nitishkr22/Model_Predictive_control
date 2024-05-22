@@ -1,0 +1,2 @@
+genesis_msgs:genesis_path_follower
+-DCATKIN_DEVEL_PREFIX=/home/radar/Documents/MPC/Model_Predictive_control/gensis_mpc/devel -DCMAKE_INSTALL_PREFIX=/home/radar/Documents/MPC/Model_Predictive_control/gensis_mpc/install -G Unix Makefiles

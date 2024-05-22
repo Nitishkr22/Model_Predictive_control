@@ -61,7 +61,7 @@ psi=psi_ref[0]
 psi_dot=0.
 X=X_ref[0]
 Y=Y_ref[0]
-print(x_dot)
+# print(x_dot)
 # exit()
 states=np.array([x_dot,y_dot,psi,psi_dot,X,Y])
 statesTotal=np.zeros((len(t),len(states))) #rows,columns # It will keep track of all your states during the entire manoeuvre

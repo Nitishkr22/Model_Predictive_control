@@ -362,7 +362,7 @@ while(i<len(X)-1):
     t=np.append(t,t[-1]+Ts)
     i=i+1
 print(len(t),len(X))
-    
+print(t.shape, X.shape)
 plt.plot(t,np.rad2deg(psiInt))
 plt.xlabel('X-position [m]',fontsize=15)
 plt.ylabel('Y-position [m]',fontsize=15)

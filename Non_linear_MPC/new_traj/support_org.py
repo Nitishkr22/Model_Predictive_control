@@ -112,8 +112,8 @@ class SupportFilesCar:
 
 
         # Section 2
-        turn_radius_2=150   #50
-        turn_angle_2=np.pi  #np.pi/2
+        turn_radius_2=50   #50
+        turn_angle_2=np.pi /2 #np.pi/2
         final_Y_2=100
 
         turn_distance_2=turn_angle_2*turn_radius_2
@@ -128,156 +128,156 @@ class SupportFilesCar:
             Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
             # No need to worry about the reference y_dot, it is always 0 in the body frame
 
-        # while Y[-1]<final_Y_2:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-        # t_temp_2=t[-1]
+        while Y[-1]<final_Y_2:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        t_temp_2=t[-1]
 
 
-        # # Section 3
-        # turn_radius_3=25
-        # turn_angle_3=np.pi/2
-        # x_dot_body_i_3=5
-        # x_dot_body_f_3=10
-        # delta_t_increase_3=5.24
-        # X_f_3=450
+        # Section 3
+        turn_radius_3=25
+        turn_angle_3=np.pi/2
+        x_dot_body_i_3=5
+        x_dot_body_f_3=10
+        delta_t_increase_3=5.24
+        X_f_3=450
 
 
-        # turn_distance_3=turn_angle_3*turn_radius_3
-        # A_increase_3=(x_dot_body_f_3-x_dot_body_i_3)/2
-        # f_increase_3=1/(2*delta_t_increase_3)
-        # C_increase_3=A_increase_3+x_dot_body_i_3
+        turn_distance_3=turn_angle_3*turn_radius_3
+        A_increase_3=(x_dot_body_f_3-x_dot_body_i_3)/2
+        f_increase_3=1/(2*delta_t_increase_3)
+        C_increase_3=A_increase_3+x_dot_body_i_3
 
 
-        # while psiInt[-1]<=turn_angle_2+turn_angle_3:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,A_increase_3*np.sin(2*np.pi*f_increase_3*(t[-1]-delta_t_increase_3/2-t_temp_2))+C_increase_3)
-        #     psiInt=np.append(psiInt,psiInt[-1]+x_dot_body[-1]/turn_radius_3*Ts)
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        while psiInt[-1]<=turn_angle_2+turn_angle_3:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,A_increase_3*np.sin(2*np.pi*f_increase_3*(t[-1]-delta_t_increase_3/2-t_temp_2))+C_increase_3)
+            psiInt=np.append(psiInt,psiInt[-1]+x_dot_body[-1]/turn_radius_3*Ts)
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
 
-        # while X[-1]>X_f_3:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-        # t_temp_3=t[-1]
+        while X[-1]>X_f_3:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        t_temp_3=t[-1]
 
-        # # Section 4
-        # turn_radius_4=50
-        # turn_angle_4=-np.pi
-        # x_dot_body_i_4=10
-        # x_dot_body_f_4=15
-        # delta_t_increase_4=12.60
+        # Section 4
+        turn_radius_4=50
+        turn_angle_4=-np.pi
+        x_dot_body_i_4=10
+        x_dot_body_f_4=15
+        delta_t_increase_4=12.60
 
-        # turn_distance_4=turn_angle_4*turn_radius_4
-        # A_increase_4=(x_dot_body_f_4-x_dot_body_i_4)/2
-        # f_increase_4=1/(2*delta_t_increase_4)
-        # C_increase_4=A_increase_4+x_dot_body_i_4
-
-
-        # while psiInt[-1]>=turn_angle_2+turn_angle_3+turn_angle_4:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,A_increase_4*np.sin(2*np.pi*f_increase_4*(t[-1]-delta_t_increase_4/2-t_temp_3))+C_increase_4)
-        #     psiInt=np.append(psiInt,psiInt[-1]-x_dot_body[-1]/turn_radius_4*Ts)
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-        # t_temp_4=t[-1]
+        turn_distance_4=turn_angle_4*turn_radius_4
+        A_increase_4=(x_dot_body_f_4-x_dot_body_i_4)/2
+        f_increase_4=1/(2*delta_t_increase_4)
+        C_increase_4=A_increase_4+x_dot_body_i_4
 
 
-        # # Section 5
-        # turn_radius_5=50
-        # turn_angle_5=np.pi
-        # x_dot_body_i_5=15
-        # x_dot_body_f_5=25
-        # delta_t_increase_5=7.88
-        # X_f_5=200
-
-        # turn_distance_5=turn_angle_5*turn_radius_5
-        # A_increase_5=(x_dot_body_f_5-x_dot_body_i_5)/2
-        # f_increase_5=1/(2*delta_t_increase_5)
-        # C_increase_5=A_increase_5+x_dot_body_i_5
+        while psiInt[-1]>=turn_angle_2+turn_angle_3+turn_angle_4:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,A_increase_4*np.sin(2*np.pi*f_increase_4*(t[-1]-delta_t_increase_4/2-t_temp_3))+C_increase_4)
+            psiInt=np.append(psiInt,psiInt[-1]-x_dot_body[-1]/turn_radius_4*Ts)
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        t_temp_4=t[-1]
 
 
-        # while psiInt[-1]<=turn_angle_2+turn_angle_3+turn_angle_4+turn_angle_5:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,A_increase_5*np.sin(2*np.pi*f_increase_5*(t[-1]-delta_t_increase_5/2-t_temp_4))+C_increase_5)
-        #     psiInt=np.append(psiInt,psiInt[-1]+x_dot_body[-1]/turn_radius_5*Ts)
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        # Section 5
+        turn_radius_5=50
+        turn_angle_5=np.pi
+        x_dot_body_i_5=15
+        x_dot_body_f_5=25
+        delta_t_increase_5=7.88
+        X_f_5=200
 
-        # while X[-1]>X_f_5:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-
-
-        # # Section 6
-        # x_dot_body_i_6=25
-        # x_dot_body_f_6=3
-        # delta_t_increase_6=8
-        # x_dot_slope_6=(x_dot_body_f_6-x_dot_body_i_6)/delta_t_increase_6
-        # while x_dot_body[-1]>x_dot_body_f_6:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1]+x_dot_slope_6*Ts)
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        turn_distance_5=turn_angle_5*turn_radius_5
+        A_increase_5=(x_dot_body_f_5-x_dot_body_i_5)/2
+        f_increase_5=1/(2*delta_t_increase_5)
+        C_increase_5=A_increase_5+x_dot_body_i_5
 
 
-        # X_f_6=80
-        # while X[-1]>X_f_6:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
-        # t_temp_6=t[-1]
+        while psiInt[-1]<=turn_angle_2+turn_angle_3+turn_angle_4+turn_angle_5:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,A_increase_5*np.sin(2*np.pi*f_increase_5*(t[-1]-delta_t_increase_5/2-t_temp_4))+C_increase_5)
+            psiInt=np.append(psiInt,psiInt[-1]+x_dot_body[-1]/turn_radius_5*Ts)
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
 
-        # # Section 7
-        # turn_radius_7=15
-        # turn_angle_7=np.pi/2
-        # x_dot_body_f_7=30
-        # final_Y_7=-70
+        while X[-1]>X_f_5:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
 
-        # turn_distance_7=turn_angle_7*turn_radius_7
-        # turn_time_7=turn_distance_7/x_dot_body[-1]
-        # angular_velocity_7=turn_angle_7/turn_time_7
-        # car_acceleration_7=3
 
-        # while psiInt[-1]<turn_angle_2+turn_angle_3+turn_angle_4+turn_angle_5+turn_angle_7:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1]+angular_velocity_7*Ts)
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        # Section 6
+        x_dot_body_i_6=25
+        x_dot_body_f_6=3
+        delta_t_increase_6=8
+        x_dot_slope_6=(x_dot_body_f_6-x_dot_body_i_6)/delta_t_increase_6
+        while x_dot_body[-1]>x_dot_body_f_6:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1]+x_dot_slope_6*Ts)
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
 
-        # while Y[-1]>=300:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
 
-        # while x_dot_body[-1]<x_dot_body_f_7:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1]+car_acceleration_7*Ts)
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        X_f_6=80
+        while X[-1]>X_f_6:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        t_temp_6=t[-1]
 
-        # while Y[-1]>=final_Y_7:
-        #     t=np.append(t,t[-1]+Ts)
-        #     x_dot_body=np.append(x_dot_body,x_dot_body[-1])
-        #     psiInt=np.append(psiInt,psiInt[-1])
-        #     X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
-        #     Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+        # Section 7
+        turn_radius_7=15
+        turn_angle_7=np.pi/2
+        x_dot_body_f_7=30
+        final_Y_7=-70
+
+        turn_distance_7=turn_angle_7*turn_radius_7
+        turn_time_7=turn_distance_7/x_dot_body[-1]
+        angular_velocity_7=turn_angle_7/turn_time_7
+        car_acceleration_7=3
+
+        while psiInt[-1]<turn_angle_2+turn_angle_3+turn_angle_4+turn_angle_5+turn_angle_7:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1]+angular_velocity_7*Ts)
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+
+        while Y[-1]>=300:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+
+        while x_dot_body[-1]<x_dot_body_f_7:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1]+car_acceleration_7*Ts)
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
+
+        while Y[-1]>=final_Y_7:
+            t=np.append(t,t[-1]+Ts)
+            x_dot_body=np.append(x_dot_body,x_dot_body[-1])
+            psiInt=np.append(psiInt,psiInt[-1])
+            X=np.append(X,X[-1]+x_dot_body[-1]*np.cos(psiInt[-1])*Ts)
+            Y=np.append(Y,Y[-1]+x_dot_body[-1]*np.sin(psiInt[-1])*Ts)
 
         y_dot_body=np.zeros(len(t))
 
